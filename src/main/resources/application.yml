@@ -1,0 +1,49 @@
+logging:
+    level:
+        com:
+            zaxxer:
+                hikari: TRACE
+                hikari.HikariConfig: DEBUG
+spring:
+    cloud:
+        gcp:
+            sql:
+                instance-connection-name: xcode-ingot:us-central1:xcode-hinalang
+                database-name: hinalang
+                enabled: false
+    datasource:
+        hikari:
+            maximum-pool-size: 10
+        username: ENC(Te/HiLESkKgrvPIThZ3Yzg==)
+        password: ENC(QNCRpHFuqonLrawu8Fw68RDyoM9bSJNN)
+        url: jdbc:mysql://127.0.0.1:3306/porsea?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC
+    jpa:
+        hibernate:
+            ddl-auto: update
+        database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+        properties:
+            hibernate:
+                format_sql: true
+        show-sql: true
+        generate-ddl: true
+    main:
+        allow-bean-definition-overriding: true
+    mail:
+        host: smtp.gmail.com
+        port: 587
+        username: ENC(+Mdm65zhWMuOuBk0Sxt3TgNNNwGz8JOnPizAySeKyzA=)
+        password: ENC(8AiqB0T5+yGIivxnjhunBxqWz6YYe8lv1C0TRM2Zn40=)
+        properties:
+            mail:
+                smtp:
+                    auth: true
+                    starttls:
+                        enable: true
+        protocol: smtp
+        test-connection: false
+        default-encoding: utf-8
+jasypt:
+    encryptor:
+        password: xcode
+        algorithm: PBEWithMD5AndDES
+        iv-generator-classname: org.jasypt.iv.NoIvGenerator
