@@ -4,20 +4,25 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a29eed51-b312-4901-b004-fcb36c8edd05" name="Changes" comment="db update">
-      <change afterPath="$PROJECT_DIR$/.idea/git_toolbox_prj.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/xcode/parhepengon/domain/model/UserModel.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/xcode/parhepengon/domain/repository/UserRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/xcode/parhepengon/domain/request/auth/ChangePasswordRequest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/xcode/parhepengon/domain/request/auth/EditProfileRequest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/xcode/parhepengon/domain/request/auth/ForgotPasswordRequest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/xcode/parhepengon/domain/request/auth/LoginRequest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/xcode/parhepengon/domain/request/auth/RegisterRequest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/xcode/parhepengon/domain/request/auth/ResetPasswordRequest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/xcode/parhepengon/domain/request/auth/VerifyOtpRequest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/xcode/parhepengon/domain/response/auth/LoginResponse.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/xcode/parhepengon/domain/response/auth/RegisterResponse.java" afterDir="false" />
+    <list default="true" id="a29eed51-b312-4901-b004-fcb36c8edd05" name="Changes" comment="base model">
+      <change afterPath="$PROJECT_DIR$/src/main/java/xcode/parhepengon/api/AuthAPI.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/xcode/parhepengon/domain/enums/EventEnum.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/xcode/parhepengon/domain/mapper/CommonMapper.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/xcode/parhepengon/domain/mapper/HistoryMapper.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/xcode/parhepengon/domain/model/HistoryModel.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/xcode/parhepengon/domain/model/ResetModel.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/xcode/parhepengon/domain/repository/HistoryRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/xcode/parhepengon/domain/repository/ResetRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/xcode/parhepengon/presenter/HistoryPresenter.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/xcode/parhepengon/presenter/JwtPresenter.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/xcode/parhepengon/presenter/UserPresenter.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/xcode/parhepengon/service/EmailService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/xcode/parhepengon/service/HistoryService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/xcode/parhepengon/service/JwtService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/xcode/parhepengon/service/UserService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/xcode/parhepengon/domain/repository/UserRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/xcode/parhepengon/domain/repository/UserRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.yml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -63,7 +68,7 @@
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "SONARLINT_PRECOMMIT_ANALYSIS": "true",
     "WebServerToolWindowFactoryState": "false",
-    "last_opened_file_path": "/Users/adapundi/code/xcode/parhepengon-be/src/main/java/xcode/parhepengon/domain/response",
+    "last_opened_file_path": "/Users/adapundi/code/xcode/parhepengon-be/src/main/java/xcode/parhepengon/service",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -79,17 +84,18 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/main/java/xcode/parhepengon/service" />
       <recent name="$PROJECT_DIR$/src/main/java/xcode/parhepengon/domain/response" />
       <recent name="$PROJECT_DIR$/src/main/java/xcode/parhepengon/domain/request/auth" />
       <recent name="$PROJECT_DIR$/src/main/java/xcode/parhepengon/domain/model" />
       <recent name="$PROJECT_DIR$/src/main/java/xcode/parhepengon" />
-      <recent name="$PROJECT_DIR$" />
     </key>
     <key name="CopyClassDialog.RECENTS_KEY">
-      <recent name="xcode.parhepengon.domain.repository" />
+      <recent name="xcode.parhepengon.api" />
+      <recent name="xcode.parhepengon.domain.mapper" />
       <recent name="xcode.parhepengon.domain.model" />
-      <recent name="xcode.parhepengon.domain.response" />
-      <recent name="xcode.parhepengon" />
+      <recent name="xcode.parhepengon.domain.repository" />
+      <recent name="xcode.parhepengon.presenter" />
     </key>
   </component>
   <component name="RunManager">
@@ -120,7 +126,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1686305695191</updated>
-      <workItem from="1686305696621" duration="2468000" />
+      <workItem from="1686305696621" duration="3927000" />
     </task>
     <task id="LOCAL-00001" summary="init project">
       <created>1686306741481</created>
@@ -143,7 +149,14 @@
       <option name="project" value="LOCAL" />
       <updated>1686307616532</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="base model">
+      <created>1686308317184</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1686308317184</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -153,6 +166,7 @@
     <MESSAGE value="init project" />
     <MESSAGE value="base update" />
     <MESSAGE value="db update" />
-    <option name="LAST_COMMIT_MESSAGE" value="db update" />
+    <MESSAGE value="base model" />
+    <option name="LAST_COMMIT_MESSAGE" value="base model" />
   </component>
 </project>
