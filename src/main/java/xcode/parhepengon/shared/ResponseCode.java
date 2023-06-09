@@ -9,6 +9,7 @@ public class ResponseCode {
     public static final String EMAIL_NOT_FOUND = "Email not found. Please sign up.";
     public static final String EMAIL_EXIST = "Email already registered. Please sign in.";
     public static final String USERNAME_EXIST = "Username already taken. Please put another one.";
+    public static final String NOT_AUTHORIZED_MESSAGE = "Not Authorized";
     public static final String AUTH_ERROR_MESSAGE = "Wrong username/password";
     public static final String OTP_ERROR_MESSAGE = "Invalid OTP";
     public static final String TOKEN_ERROR_MESSAGE = "Invalid token";

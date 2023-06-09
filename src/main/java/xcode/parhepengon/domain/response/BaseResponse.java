@@ -37,9 +37,9 @@ public class BaseResponse<T> {
         this.message = TOKEN_ERROR_MESSAGE;
     }
 
-    public void setWrongAuth() {
+    public void setNotAuthorized(String message) {
         this.statusCode = HttpStatus.UNAUTHORIZED.value();
-        this.message = AUTH_ERROR_MESSAGE;
+        this.message = message;
     }
 
     public void setWrongParams() {

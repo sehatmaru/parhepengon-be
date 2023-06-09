@@ -7,5 +7,8 @@ public enum EventEnum {
     LOGIN,
     CHANGE_PASSWORD,
     EDIT_PROFILE,
-    RESET_PASSWORD
+    RESET_PASSWORD,
+    CREATE_GROUP,
+    EDIT_GROUP,
+    DELETE_GROUP
 }

@@ -72,7 +72,7 @@ public class BaseExceptions extends ResponseEntityExceptionHandler {
                 break;
             }
             case AUTH_ERROR_MESSAGE: {
-                response.setWrongAuth();
+                response.setNotAuthorized(AUTH_ERROR_MESSAGE);
                 break;
             }
             case NOT_FOUND_MESSAGE: {
@@ -109,6 +109,10 @@ public class BaseExceptions extends ResponseEntityExceptionHandler {
             }
             case INVALID_CODE: {
                 response.setNotFound(INVALID_CODE);
+                break;
+            }
+            case NOT_AUTHORIZED_MESSAGE: {
+                response.setNotAuthorized(NOT_AUTHORIZED_MESSAGE);
                 break;
             }
             default: response.setFailed(ex.getMessage());
