@@ -15,10 +15,10 @@ spring:
         hikari:
             maximum-pool-size: 10
         username: ENC(Te/HiLESkKgrvPIThZ3Yzg==)
-#        password: ENC(eqxpsnpiLriw7Z3bsS3/a3bfDRmkWB7RyrlA1m0ynys=)
-#        url: jdbc:mysql://containers-us-west-99.railway.app:8066/porsea
-        url: jdbc:mysql://127.0.0.1:3306/porsea?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC
-        password: Xcode-123
+        password: ENC(eqxpsnpiLriw7Z3bsS3/a3bfDRmkWB7RyrlA1m0ynys=)
+        url: jdbc:mysql://containers-us-west-99.railway.app:8066/porsea
+#        url: jdbc:mysql://127.0.0.1:3306/porsea?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC
+#        password: Xcode-123
     jpa:
         hibernate:
             ddl-auto: update

@@ -4,26 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a29eed51-b312-4901-b004-fcb36c8edd05" name="Changes" comment="auth devs">
-      <change afterPath="$PROJECT_DIR$/src/main/java/xcode/parhepengon/api/GroupAPI.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/xcode/parhepengon/domain/enums/GroupTypeEnum.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/xcode/parhepengon/domain/mapper/GroupMapper.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/xcode/parhepengon/domain/mapper/GroupMemberMapper.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/xcode/parhepengon/domain/model/GroupMemberModel.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/xcode/parhepengon/domain/model/GroupModel.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/xcode/parhepengon/domain/repository/GroupMemberRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/xcode/parhepengon/domain/repository/GroupRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/xcode/parhepengon/domain/request/BaseRequest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/xcode/parhepengon/domain/request/group/CreateGroupRequest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/xcode/parhepengon/domain/response/SecureIdResponse.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/xcode/parhepengon/presenter/GroupPresenter.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/xcode/parhepengon/service/GroupMemberService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/xcode/parhepengon/service/GroupService.java" afterDir="false" />
+    <list default="true" id="a29eed51-b312-4901-b004-fcb36c8edd05" name="Changes" comment="group crud">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/xcode/parhepengon/domain/enums/EventEnum.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/xcode/parhepengon/domain/enums/EventEnum.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/xcode/parhepengon/domain/response/BaseResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/xcode/parhepengon/domain/response/BaseResponse.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/xcode/parhepengon/exception/BaseExceptions.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/xcode/parhepengon/exception/BaseExceptions.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/xcode/parhepengon/shared/ResponseCode.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/xcode/parhepengon/shared/ResponseCode.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -127,7 +109,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1686305695191</updated>
-      <workItem from="1686305696621" duration="8386000" />
+      <workItem from="1686305696621" duration="9819000" />
     </task>
     <task id="LOCAL-00001" summary="init project">
       <created>1686306741481</created>
@@ -164,7 +146,14 @@
       <option name="project" value="LOCAL" />
       <updated>1686309830644</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="group crud">
+      <created>1686318638552</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1686318638552</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -176,6 +165,8 @@
     <MESSAGE value="db update" />
     <MESSAGE value="base model" />
     <MESSAGE value="auth devs" />
-    <option name="LAST_COMMIT_MESSAGE" value="auth devs" />
+    <MESSAGE value="crud group" />
+    <MESSAGE value="group crud" />
+    <option name="LAST_COMMIT_MESSAGE" value="group crud" />
   </component>
 </project>
