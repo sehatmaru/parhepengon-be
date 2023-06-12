@@ -103,6 +103,10 @@ public class BaseExceptions extends ResponseEntityExceptionHandler {
                 response.setExistData(USERNAME_EXIST);
                 break;
             }
+            case USER_EXIST_ON_GROUP: {
+                response.setExistData(USER_EXIST_ON_GROUP);
+                break;
+            }
             case EMAIL_NOT_FOUND: {
                 response.setNotFound(EMAIL_NOT_FOUND);
                 break;

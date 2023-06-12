@@ -12,4 +12,5 @@ public interface UserRepository extends JpaRepository<UserModel, String> {
     Optional<UserModel> findByUsernameAndActiveIsTrueAndDeletedAtIsNull(String username);
     Optional<UserModel> findByEmailAndActiveIsTrueAndDeletedAtIsNull(String email);
     Optional<UserModel> findBySecureIdAndDeletedAtIsNull(String secureId);
+    Optional<UserModel> findBySecureIdAndActiveIsTrueAndDeletedAtIsNull(String secureId);
 }

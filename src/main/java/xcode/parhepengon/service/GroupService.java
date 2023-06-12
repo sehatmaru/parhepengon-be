@@ -28,9 +28,6 @@ public class GroupService implements GroupPresenter {
     private HistoryService historyService;
 
     @Autowired
-    private GroupMemberService groupMemberService;
-
-    @Autowired
     private GroupRepository groupRepository;
 
     @Autowired

@@ -121,12 +121,12 @@ public class UserService implements UserPresenter {
 
         Optional<UserModel> userModel = userRepository.findBySecureIdAndDeletedAtIsNull(CurrentUser.get().getUserSecureId());
 
-        if (!otpRepository.existsByUserSecureIdAndVerifiedIsFalse(CurrentUser.get().getUserSecureId()) || userModel.isEmpty()) {
+        if (!otpRepository.existsByUserAndVerifiedIsFalse(CurrentUser.get().getUserSecureId()) || userModel.isEmpty()) {
             throw new AppException(NOT_FOUND_MESSAGE);
         }
 
         try {
-            Optional<OtpModel> otpModel = otpRepository.findByUserSecureIdAndVerifiedIsFalse(userModel.get().getSecureId());
+            Optional<OtpModel> otpModel = otpRepository.findByUserAndVerifiedIsFalse(userModel.get().getSecureId());
             Optional<TokenModel> tokenModel = tokenRepository.findByTokenAndTemporaryIsTrue(CurrentUser.get().getToken());
 
             if (otpModel.isEmpty()) {
@@ -159,10 +159,10 @@ public class UserService implements UserPresenter {
         BaseResponse<Boolean> response = new BaseResponse<>();
 
         Optional<TokenModel> tokenModel = tokenRepository.findByTokenAndTemporaryIsTrue(CurrentUser.get().getToken());
-        Optional<OtpModel> otpModel = otpRepository.findByUserSecureIdAndVerifiedIsFalse(CurrentUser.get().getUserSecureId());
+        Optional<OtpModel> otpModel = otpRepository.findByUserAndVerifiedIsFalse(CurrentUser.get().getUserSecureId());
         Optional<UserModel> userModel = userRepository.findBySecureIdAndDeletedAtIsNull(CurrentUser.get().getUserSecureId());
 
-        if (!otpRepository.existsByUserSecureIdAndVerifiedIsFalse(CurrentUser.get().getUserSecureId()) || tokenModel.isEmpty() || otpModel.isEmpty() || userModel.isEmpty()) {
+        if (!otpRepository.existsByUserAndVerifiedIsFalse(CurrentUser.get().getUserSecureId()) || tokenModel.isEmpty() || otpModel.isEmpty() || userModel.isEmpty()) {
             throw new AppException(NOT_FOUND_MESSAGE);
         }
 

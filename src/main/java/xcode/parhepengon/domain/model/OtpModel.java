@@ -25,7 +25,7 @@ public class OtpModel {
     private String secureId;
 
     @Column(name = "user_secure_id")
-    private String userSecureId;
+    private String user;
 
     @Column(name = "code")
     private String code;

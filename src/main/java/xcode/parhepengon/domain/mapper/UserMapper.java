@@ -93,7 +93,7 @@ public class UserMapper {
     public OtpModel userModelToOtpModel(UserModel model) {
         if (model != null) {
             OtpModel response = new OtpModel();
-            response.setUserSecureId(model.getSecureId());
+            response.setUser(model.getSecureId());
             response.setSecureId(generateSecureId());
             response.setCode(generateOTP());
             response.setCreatedAt(new Date());

@@ -8,8 +8,8 @@ import java.util.Optional;
 
 @Repository
 public interface OtpRepository extends JpaRepository<OtpModel, String> {
-    Optional<OtpModel> findByUserSecureIdAndVerifiedIsFalse(String secureId);
+    Optional<OtpModel> findByUserAndVerifiedIsFalse(String secureId);
 
-    boolean existsByUserSecureIdAndVerifiedIsFalse(String secureId);
+    boolean existsByUserAndVerifiedIsFalse(String secureId);
 
 }

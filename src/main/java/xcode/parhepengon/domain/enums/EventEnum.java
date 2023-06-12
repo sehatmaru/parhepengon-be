@@ -10,5 +10,10 @@ public enum EventEnum {
     RESET_PASSWORD,
     CREATE_GROUP,
     EDIT_GROUP,
-    DELETE_GROUP
+    DELETE_GROUP,
+    CREATE_BILL,
+    EDIT_BILL,
+    DELETE_BILL,
+    ADD_MEMBER,
+    KICK_MEMBER
 }
