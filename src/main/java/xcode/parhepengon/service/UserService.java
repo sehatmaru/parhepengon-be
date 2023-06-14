@@ -48,6 +48,9 @@ public class UserService implements UserPresenter {
     @Autowired
     private ProfileRepository profileRepository;
 
+    @Autowired
+    private SettingRepository settingRepository;
+
     private final UserMapper userMapper = new UserMapper();
     private final CommonMapper commonMapper = new CommonMapper();
     private final ProfileMapper profileMapper = new ProfileMapper();
@@ -159,6 +162,7 @@ public class UserService implements UserPresenter {
 
             userRepository.save(userModel.get());
             otpRepository.save(otpModel.get());
+            settingRepository.save(new SettingModel(userModel.get().getSecureId()));
             tokenModel.ifPresent(tokenRepository::delete);
 
             historyService.addHistory(REGISTER, userModel.get().getSecureId());
