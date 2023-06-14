@@ -12,6 +12,8 @@ import xcode.parhepengon.domain.response.BaseResponse;
 import xcode.parhepengon.exception.AppException;
 import xcode.parhepengon.presenter.GroupMemberPresenter;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import static xcode.parhepengon.domain.enums.EventEnum.ADD_MEMBER;
@@ -82,5 +84,11 @@ public class GroupMemberService implements GroupMemberPresenter {
         }
 
         return response;
+    }
+
+    public List<GroupMemberModel> getMemberList(String secureId) {
+        return groupMemberRepository.findAllByGroupAndLeaveAtIsNull(secureId).isPresent()
+                ? groupMemberRepository.findAllByGroupAndLeaveAtIsNull(secureId).get()
+                : Collections.emptyList();
     }
 }

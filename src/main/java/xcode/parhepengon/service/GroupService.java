@@ -7,15 +7,20 @@ import xcode.parhepengon.domain.mapper.GroupMemberMapper;
 import xcode.parhepengon.domain.model.CurrentUser;
 import xcode.parhepengon.domain.model.GroupMemberModel;
 import xcode.parhepengon.domain.model.GroupModel;
+import xcode.parhepengon.domain.model.ProfileModel;
 import xcode.parhepengon.domain.repository.GroupMemberRepository;
 import xcode.parhepengon.domain.repository.GroupRepository;
+import xcode.parhepengon.domain.repository.ProfileRepository;
 import xcode.parhepengon.domain.request.BaseRequest;
 import xcode.parhepengon.domain.request.group.CreateGroupRequest;
 import xcode.parhepengon.domain.response.BaseResponse;
 import xcode.parhepengon.domain.response.SecureIdResponse;
+import xcode.parhepengon.domain.response.group.MemberResponse;
 import xcode.parhepengon.exception.AppException;
 import xcode.parhepengon.presenter.GroupPresenter;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -28,10 +33,16 @@ public class GroupService implements GroupPresenter {
     private HistoryService historyService;
 
     @Autowired
+    private GroupMemberService groupMemberService;
+
+    @Autowired
     private GroupRepository groupRepository;
 
     @Autowired
     private GroupMemberRepository groupMemberRepository;
+
+    @Autowired
+    private ProfileRepository profileRepository;
 
     private final GroupMapper groupMapper = new GroupMapper();
     private final GroupMemberMapper groupMemberMapper = new GroupMemberMapper();
@@ -88,6 +99,32 @@ public class GroupService implements GroupPresenter {
             historyService.addHistory(DELETE_GROUP, null);
 
             response.setSuccess(true);
+        } catch (Exception e) {
+            throw new AppException(e.toString());
+        }
+
+        return response;
+    }
+
+    @Override
+    public BaseResponse<List<MemberResponse>> getMemberList(BaseRequest request) {
+        BaseResponse<List<MemberResponse>> response = new BaseResponse<>();
+
+        Optional<GroupModel> model = groupRepository.findBySecureIdAndDeletedAtIsNull(request.getSecureId());
+
+        if (model.isEmpty()) {
+            throw new AppException(NOT_FOUND_MESSAGE);
+        }
+
+        try {
+            List<GroupMemberModel> memberModels = groupMemberService.getMemberList(request.getSecureId());
+            List<MemberResponse> memberResponses = new ArrayList<>();
+            memberModels.forEach(e -> {
+                Optional<ProfileModel> profileModel = profileRepository.findByUserAndDeletedAtIsNull(e.getMember());
+                memberResponses.add(groupMapper.memberModelToResponse(e, profileModel.orElse(null)));
+            });
+
+            response.setSuccess(memberResponses);
         } catch (Exception e) {
             throw new AppException(e.toString());
         }

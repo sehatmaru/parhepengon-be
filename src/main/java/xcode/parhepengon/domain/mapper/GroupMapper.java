@@ -1,8 +1,11 @@
 package xcode.parhepengon.domain.mapper;
 
 import xcode.parhepengon.domain.model.CurrentUser;
+import xcode.parhepengon.domain.model.GroupMemberModel;
 import xcode.parhepengon.domain.model.GroupModel;
+import xcode.parhepengon.domain.model.ProfileModel;
 import xcode.parhepengon.domain.request.group.CreateGroupRequest;
+import xcode.parhepengon.domain.response.group.MemberResponse;
 
 import java.util.Date;
 
@@ -41,6 +44,19 @@ public class GroupMapper {
             model.setDeletedAt(new Date());
 
             return model;
+        } else {
+            return null;
+        }
+    }
+
+    public MemberResponse memberModelToResponse(GroupMemberModel memberModel, ProfileModel profileModel) {
+        if (memberModel != null && profileModel != null) {
+            MemberResponse response = new MemberResponse();
+            response.setFullName(profileModel.getFullName());
+            response.setJoinedAt(memberModel.getJoinedAt());
+            response.setSecureId(memberModel.getMember());
+
+            return response;
         } else {
             return null;
         }

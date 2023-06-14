@@ -13,8 +13,11 @@ import xcode.parhepengon.domain.request.group.AddKickMemberRequest;
 import xcode.parhepengon.domain.request.group.CreateGroupRequest;
 import xcode.parhepengon.domain.response.BaseResponse;
 import xcode.parhepengon.domain.response.SecureIdResponse;
+import xcode.parhepengon.domain.response.group.MemberResponse;
 import xcode.parhepengon.presenter.GroupMemberPresenter;
 import xcode.parhepengon.presenter.GroupPresenter;
+
+import java.util.List;
 
 @Validated
 @RestController
@@ -73,6 +76,16 @@ public class GroupAPI {
     @PostMapping("/member/kick")
     ResponseEntity<BaseResponse<Boolean>> kickMember(@RequestBody @Validated AddKickMemberRequest request) {
         BaseResponse<Boolean> response = groupMemberPresenter.kick(request);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(response);
+    }
+
+    @PostMapping("/member/list")
+    ResponseEntity<BaseResponse<List<MemberResponse>>> memberList(@RequestBody @Validated BaseRequest request) {
+        BaseResponse<List<MemberResponse>> response = groupPresenter.getMemberList(request);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
