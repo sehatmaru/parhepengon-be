@@ -12,11 +12,11 @@ import java.util.Date;
 @Data
 @Builder
 @Entity
-@Table(name = "t_user")
+@Table(name = "t_profile")
 @DynamicUpdate
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserModel {
+public class ProfileModel {
     
     @Id @Column(name = "id", length = 36) @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private int id;
@@ -24,14 +24,17 @@ public class UserModel {
     @Column(name = "secure_id")
     private String secureId;
 
-    @Column(name = "username")
-    private String username;
+    @Column(name = "user_secure_id")
+    private String user;
 
-    @Column(name = "password")
-    private String password;
+    @Column(name = "full_name")
+    private String fullName;
 
-    @Column(name = "active")
-    private boolean active = false;
+    @Column(name = "phone")
+    private String phone;
+
+    @Column(name = "email")
+    private String email;
 
     @Column(name = "created_at")
     private Date createdAt;

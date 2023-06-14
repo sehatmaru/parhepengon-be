@@ -42,26 +42,6 @@ public class AuthAPI {
                 .body(response);
     }
 
-    @GetMapping("/profile")
-    ResponseEntity<BaseResponse<LoginResponse>> profile() {
-        BaseResponse<LoginResponse> response = userPresenter.getProfile();
-
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(response);
-    }
-
-    @PostMapping("/edit-profile")
-    ResponseEntity<BaseResponse<Boolean>> editProfile(@RequestBody @Validated EditProfileRequest request) {
-        BaseResponse<Boolean> response = userPresenter.editProfile(request);
-
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(response);
-    }
-
     @PostMapping("/change-password")
     ResponseEntity<BaseResponse<Boolean>> changePassword(@RequestBody @Validated ChangePasswordRequest request) {
         BaseResponse<Boolean> response = userPresenter.changePassword(request);

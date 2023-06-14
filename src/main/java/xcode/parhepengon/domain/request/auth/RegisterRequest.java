@@ -9,13 +9,16 @@ import javax.validation.constraints.NotBlank;
 @Setter
 public class RegisterRequest {
     @NotBlank()
-    private String fullname;
+    private String fullName;
 
     @NotBlank()
     private String username;
 
     @NotBlank()
     private String email;
+
+    @NotBlank()
+    private String phone;
 
     @NotBlank()
     private String password;

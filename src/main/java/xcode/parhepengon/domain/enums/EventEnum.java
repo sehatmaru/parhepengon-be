@@ -14,6 +14,7 @@ public enum EventEnum {
     CREATE_BILL,
     EDIT_BILL,
     DELETE_BILL,
+    UPDATE_PROFILE,
     ADD_MEMBER,
     KICK_MEMBER
 }

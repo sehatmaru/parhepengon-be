@@ -3,7 +3,6 @@ package xcode.parhepengon.domain.mapper;
 import xcode.parhepengon.domain.model.OtpModel;
 import xcode.parhepengon.domain.model.UserModel;
 import xcode.parhepengon.domain.request.auth.ChangePasswordRequest;
-import xcode.parhepengon.domain.request.auth.EditProfileRequest;
 import xcode.parhepengon.domain.request.auth.RegisterRequest;
 import xcode.parhepengon.domain.response.auth.LoginResponse;
 import xcode.parhepengon.domain.response.auth.RegisterResponse;
@@ -17,8 +16,6 @@ public class UserMapper {
         if (model != null) {
             LoginResponse response = new LoginResponse();
             response.setSecureId(model.getSecureId());
-            response.setFullname(model.getFullname());
-            response.setEmail(model.getEmail());
             response.setUsername(model.getUsername());
             response.setAccessToken(accessToken);
 
@@ -32,23 +29,9 @@ public class UserMapper {
         if (request != null) {
             UserModel model = new UserModel();
             model.setSecureId(generateSecureId());
-            model.setFullname(request.getFullname());
-            model.setEmail(request.getEmail());
             model.setUsername(request.getUsername());
             model.setPassword(encryptor(request.getPassword(), true));
             model.setCreatedAt(new Date());
-
-            return model;
-        } else {
-            return null;
-        }
-    }
-
-    public UserModel editProfileRequestToUserModel(EditProfileRequest request, UserModel model) {
-        if (request != null) {
-            model.setFullname(request.getFullname());
-            model.setEmail(request.getEmail());
-            model.setUpdatedAt(new Date());
 
             return model;
         } else {

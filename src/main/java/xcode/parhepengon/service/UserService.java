@@ -3,12 +3,10 @@ package xcode.parhepengon.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import xcode.parhepengon.domain.mapper.CommonMapper;
+import xcode.parhepengon.domain.mapper.ProfileMapper;
 import xcode.parhepengon.domain.mapper.UserMapper;
 import xcode.parhepengon.domain.model.*;
-import xcode.parhepengon.domain.repository.OtpRepository;
-import xcode.parhepengon.domain.repository.ResetRepository;
-import xcode.parhepengon.domain.repository.TokenRepository;
-import xcode.parhepengon.domain.repository.UserRepository;
+import xcode.parhepengon.domain.repository.*;
 import xcode.parhepengon.domain.request.auth.*;
 import xcode.parhepengon.domain.response.BaseResponse;
 import xcode.parhepengon.domain.response.auth.LoginResponse;
@@ -47,17 +45,27 @@ public class UserService implements UserPresenter {
     @Autowired
     private ResetRepository resetRepository;
 
+    @Autowired
+    private ProfileRepository profileRepository;
+
     private final UserMapper userMapper = new UserMapper();
     private final CommonMapper commonMapper = new CommonMapper();
+    private final ProfileMapper profileMapper = new ProfileMapper();
 
     @Override
     public BaseResponse<LoginResponse> login(LoginRequest request) {
         BaseResponse<LoginResponse> response = new BaseResponse<>();
 
-        Optional<UserModel> model = userRepository.findByUsernameOrEmailAndActiveIsTrueAndDeletedAtIsNull(request.getUsername(), request.getUsername());
+        Optional<UserModel> model = userRepository.findByUsernameAndActiveIsTrueAndDeletedAtIsNull(request.getUsername());
 
         if (model.isEmpty() || !Objects.equals(encryptor(model.get().getPassword(), false), request.getPassword())) {
             throw new AppException(AUTH_ERROR_MESSAGE);
+        }
+
+        Optional<ProfileModel> profileModel = profileRepository.findByUserAndDeletedAtIsNull(model.get().getSecureId());
+
+        if (profileModel.isEmpty()) {
+            throw new AppException(NOT_FOUND_MESSAGE);
         }
 
         try {
@@ -70,7 +78,11 @@ public class UserService implements UserPresenter {
 
             historyService.addHistory(LOGIN, model.get().getSecureId());
 
-            response.setSuccess(userMapper.userModelToLoginResponse(model.get(), token));
+            LoginResponse loginResponse = userMapper.userModelToLoginResponse(model.get(), token);
+            loginResponse.setPhone(profileModel.get().getPhone());
+            loginResponse.setFullName(profileModel.get().getFullName());
+
+            response.setSuccess(loginResponse);
         } catch (Exception e) {
             throw new AppException(e.toString());
         }
@@ -82,7 +94,10 @@ public class UserService implements UserPresenter {
     public BaseResponse<RegisterResponse> register(RegisterRequest request) {
         BaseResponse<RegisterResponse> response = new BaseResponse<>();
 
-        if (userRepository.findByEmailAndActiveIsTrueAndDeletedAtIsNull(request.getEmail()).isPresent()) {
+        Optional<ProfileModel> model = profileRepository.findByEmailAndDeletedAtIsNull(request.getEmail());
+        Optional<UserModel> userModel = userRepository.findBySecureIdAndActiveIsTrueAndDeletedAtIsNull(model.map(ProfileModel::getEmail).orElse(null));
+
+        if (userModel.isPresent()) {
             throw new AppException(EMAIL_EXIST);
         }
 
@@ -91,18 +106,20 @@ public class UserService implements UserPresenter {
         }
 
         try {
-            UserModel model = userMapper.registerRequestToUserModel(request);
-            userRepository.save(model);
+            UserModel newModel = userMapper.registerRequestToUserModel(request);
+            ProfileModel profileModel = profileMapper.registerRequestToProfileModel(request, newModel.getSecureId());
+            userRepository.save(newModel);
+            profileRepository.save(profileModel);
 
-            String token = jwtService.generateToken(model);
+            String token = jwtService.generateToken(newModel);
 
             tokenRepository.save(new TokenModel(
                     token,
-                    model.getSecureId(),
+                    newModel.getSecureId(),
                     true
             ));
 
-            OtpModel otpModel = userMapper.userModelToOtpModel(model);
+            OtpModel otpModel = userMapper.userModelToOtpModel(newModel);
 
             otpRepository.save(otpModel);
             emailService.sendOtpEmail(request.getEmail(), otpModel.getCode());
@@ -161,8 +178,9 @@ public class UserService implements UserPresenter {
         Optional<TokenModel> tokenModel = tokenRepository.findByTokenAndTemporaryIsTrue(CurrentUser.get().getToken());
         Optional<OtpModel> otpModel = otpRepository.findByUserAndVerifiedIsFalse(CurrentUser.get().getUserSecureId());
         Optional<UserModel> userModel = userRepository.findBySecureIdAndDeletedAtIsNull(CurrentUser.get().getUserSecureId());
+        Optional<ProfileModel> profileModel = profileRepository.findByUserAndDeletedAtIsNull(CurrentUser.get().getUserSecureId());
 
-        if (!otpRepository.existsByUserAndVerifiedIsFalse(CurrentUser.get().getUserSecureId()) || tokenModel.isEmpty() || otpModel.isEmpty() || userModel.isEmpty()) {
+        if (!otpRepository.existsByUserAndVerifiedIsFalse(CurrentUser.get().getUserSecureId()) || profileModel.isEmpty() || tokenModel.isEmpty() || otpModel.isEmpty() || userModel.isEmpty()) {
             throw new AppException(NOT_FOUND_MESSAGE);
         }
 
@@ -173,7 +191,7 @@ public class UserService implements UserPresenter {
 
             otpRepository.save(otpModel.get());
             tokenRepository.save(tokenModel.get());
-            emailService.sendOtpEmail(userModel.get().getEmail(), newOtp);
+            emailService.sendOtpEmail(profileModel.get().getEmail(), newOtp);
 
             response.setSuccess(true);
         } catch (Exception e) {
@@ -209,7 +227,8 @@ public class UserService implements UserPresenter {
     public BaseResponse<Boolean> forgotPassword(ForgotPasswordRequest request) {
         BaseResponse<Boolean> response = new BaseResponse<>();
 
-        Optional<UserModel> userModel = userRepository.findByEmailAndActiveIsTrueAndDeletedAtIsNull(request.getEmail());
+        Optional<ProfileModel> profileModel = profileRepository.findByEmailAndDeletedAtIsNull(request.getEmail());
+        Optional<UserModel> userModel = userRepository.findBySecureIdAndActiveIsTrueAndDeletedAtIsNull(profileModel.map(ProfileModel::getUser).orElse(null));
 
         if (userModel.isEmpty()) {
             throw new AppException(EMAIL_NOT_FOUND);
@@ -247,7 +266,7 @@ public class UserService implements UserPresenter {
             throw new AppException(INVALID_CODE);
         }
 
-        Optional<UserModel> userModel = userRepository.findByEmailAndActiveIsTrueAndDeletedAtIsNull(resetModel.getEmail());
+        Optional<UserModel> userModel = userRepository.findBySecureIdAndActiveIsTrueAndDeletedAtIsNull(CurrentUser.get().getSecureId());
 
         if (userModel.isEmpty()) {
             throw new AppException(NOT_FOUND_MESSAGE);
@@ -260,44 +279,6 @@ public class UserService implements UserPresenter {
             resetRepository.save(resetModel);
 
             historyService.addHistory(RESET_PASSWORD, userModel.get().getSecureId());
-
-            response.setSuccess(true);
-        } catch (Exception e) {
-            throw new AppException(e.toString());
-        }
-
-        return response;
-    }
-
-    @Override
-    public BaseResponse<LoginResponse> getProfile() {
-        BaseResponse<LoginResponse> response = new BaseResponse<>();
-
-        Optional<UserModel> model = userRepository.findBySecureIdAndDeletedAtIsNull(CurrentUser.get().getUserSecureId());
-
-        if (model.isEmpty()) {
-            throw new AppException(AUTH_ERROR_MESSAGE);
-        }
-
-        response.setSuccess(userMapper.userModelToLoginResponse(model.get(), null));
-
-        return response;
-    }
-
-    @Override
-    public BaseResponse<Boolean> editProfile(EditProfileRequest request) {
-        BaseResponse<Boolean> response = new BaseResponse<>();
-
-        Optional<UserModel> model = userRepository.findBySecureIdAndDeletedAtIsNull(CurrentUser.get().getUserSecureId());
-
-        if (model.isEmpty()) {
-            throw new AppException(NOT_FOUND_MESSAGE);
-        }
-
-        try {
-            userRepository.save(userMapper.editProfileRequestToUserModel(request, model.get()));
-
-            historyService.addHistory(EDIT_PROFILE, null);
 
             response.setSuccess(true);
         } catch (Exception e) {
@@ -332,11 +313,5 @@ public class UserService implements UserPresenter {
         }
 
         return response;
-    }
-
-    public String getCurrentUserPassword() {
-        Optional<UserModel> userModel = userRepository.findBySecureIdAndDeletedAtIsNull(CurrentUser.get().getUserSecureId());
-
-        return userModel.map(model -> encryptor(model.getPassword(), false)).orElse(null);
     }
 }
