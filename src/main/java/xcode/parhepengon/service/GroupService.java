@@ -110,7 +110,7 @@ public class GroupService implements GroupPresenter {
     public BaseResponse<List<MemberResponse>> getMemberList(BaseRequest request) {
         BaseResponse<List<MemberResponse>> response = new BaseResponse<>();
 
-        Optional<GroupModel> model = groupRepository.findBySecureIdAndDeletedAtIsNull(request.getSecureId());
+        Optional<GroupModel> model = groupRepository.getGroup(request.getSecureId());
 
         if (model.isEmpty()) {
             throw new AppException(NOT_FOUND_MESSAGE);
@@ -120,7 +120,7 @@ public class GroupService implements GroupPresenter {
             List<GroupMemberModel> memberModels = groupMemberService.getMemberList(request.getSecureId());
             List<MemberResponse> memberResponses = new ArrayList<>();
             memberModels.forEach(e -> {
-                Optional<ProfileModel> profileModel = profileRepository.findByUserAndDeletedAtIsNull(e.getMember());
+                Optional<ProfileModel> profileModel = profileRepository.getProfileBySecureId(e.getMember());
                 memberResponses.add(groupMapper.memberModelToResponse(e, profileModel.orElse(null)));
             });
 
@@ -133,7 +133,7 @@ public class GroupService implements GroupPresenter {
     }
 
     public GroupModel getGroupOwner(String secureId) {
-        Optional<GroupModel> model = groupRepository.findBySecureIdAndDeletedAtIsNull(secureId);
+        Optional<GroupModel> model = groupRepository.getGroup(secureId);
 
         if (model.isEmpty()) {
             throw new AppException(NOT_FOUND_MESSAGE);

@@ -78,7 +78,7 @@ public class BillService implements BillPresenter {
             List<Bill> bills = calculateBills(request.getMember(), request.getAmount(), request.getMethod());
 
             bills.forEach(e -> {
-                Optional<BillMemberModel> memberModel = billMemberRepository.findByBillAndMember(request.getSecureId(), e.getMember());
+                Optional<BillMemberModel> memberModel = billMemberRepository.getBillMember(request.getSecureId(), e.getMember());
 
                 if (memberModel.isEmpty()) {
                     throw new AppException(NOT_FOUND_MESSAGE);
@@ -106,7 +106,7 @@ public class BillService implements BillPresenter {
         try {
             billRepository.save(billMapper.deleteModel(model));
 
-            List<BillMemberModel> memberModels = billMemberRepository.findAllByBill(request.getSecureId());
+            List<BillMemberModel> memberModels = billMemberRepository.getBillMemberList(request.getSecureId());
             memberModels.forEach(e -> e.setDeleted(true));
 
             billMemberRepository.saveAll(memberModels);
@@ -122,7 +122,7 @@ public class BillService implements BillPresenter {
     }
 
     private BillModel checkBill(String secureId) {
-        Optional<BillModel> model = billRepository.findBySecureIdAndDeletedAtIsNull(secureId);
+        Optional<BillModel> model = billRepository.getBill(secureId);
 
         if (model.isEmpty()) {
             throw new AppException(NOT_FOUND_MESSAGE);

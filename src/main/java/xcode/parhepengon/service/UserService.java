@@ -59,13 +59,13 @@ public class UserService implements UserPresenter {
     public BaseResponse<LoginResponse> login(LoginRequest request) {
         BaseResponse<LoginResponse> response = new BaseResponse<>();
 
-        Optional<UserModel> model = userRepository.findByUsernameAndActiveIsTrueAndDeletedAtIsNull(request.getUsername());
+        Optional<UserModel> model = userRepository.getActiveUserByUsername(request.getUsername());
 
         if (model.isEmpty() || !Objects.equals(encryptor(model.get().getPassword(), false), request.getPassword())) {
             throw new AppException(AUTH_ERROR_MESSAGE);
         }
 
-        Optional<ProfileModel> profileModel = profileRepository.findByUserAndDeletedAtIsNull(model.get().getSecureId());
+        Optional<ProfileModel> profileModel = profileRepository.getProfileBySecureId(model.get().getSecureId());
 
         if (profileModel.isEmpty()) {
             throw new AppException(NOT_FOUND_MESSAGE);
@@ -97,14 +97,14 @@ public class UserService implements UserPresenter {
     public BaseResponse<RegisterResponse> register(RegisterRequest request) {
         BaseResponse<RegisterResponse> response = new BaseResponse<>();
 
-        Optional<ProfileModel> model = profileRepository.findByEmailAndDeletedAtIsNull(request.getEmail());
-        Optional<UserModel> userModel = userRepository.findBySecureIdAndActiveIsTrueAndDeletedAtIsNull(model.map(ProfileModel::getEmail).orElse(null));
+        Optional<ProfileModel> model = profileRepository.getProfileByEmail(request.getEmail());
+        Optional<UserModel> userModel = userRepository.getActiveUserBySecureId(model.map(ProfileModel::getEmail).orElse(null));
 
         if (userModel.isPresent()) {
             throw new AppException(EMAIL_EXIST);
         }
 
-        if (userRepository.findByUsernameAndActiveIsTrueAndDeletedAtIsNull(request.getUsername()).isPresent()) {
+        if (userRepository.getActiveUserByUsername(request.getUsername()).isPresent()) {
             throw new AppException(USERNAME_EXIST);
         }
 
@@ -139,14 +139,14 @@ public class UserService implements UserPresenter {
     public BaseResponse<Boolean> verifyOtp(VerifyOtpRequest request) {
         BaseResponse<Boolean> response = new BaseResponse<>();
 
-        Optional<UserModel> userModel = userRepository.findBySecureIdAndDeletedAtIsNull(CurrentUser.get().getUserSecureId());
+        Optional<UserModel> userModel = userRepository.getUserBySecureId(CurrentUser.get().getUserSecureId());
 
-        if (!otpRepository.existsByUserAndVerifiedIsFalse(CurrentUser.get().getUserSecureId()) || userModel.isEmpty()) {
+        if (otpRepository.getUnverifiedOtp(CurrentUser.get().getUserSecureId()).isEmpty() || userModel.isEmpty()) {
             throw new AppException(NOT_FOUND_MESSAGE);
         }
 
         try {
-            Optional<OtpModel> otpModel = otpRepository.findByUserAndVerifiedIsFalse(userModel.get().getSecureId());
+            Optional<OtpModel> otpModel = otpRepository.getOtp(userModel.get().getSecureId());
             Optional<TokenModel> tokenModel = tokenRepository.findByTokenAndTemporaryIsTrue(CurrentUser.get().getToken());
 
             if (otpModel.isEmpty()) {
@@ -180,11 +180,11 @@ public class UserService implements UserPresenter {
         BaseResponse<Boolean> response = new BaseResponse<>();
 
         Optional<TokenModel> tokenModel = tokenRepository.findByTokenAndTemporaryIsTrue(CurrentUser.get().getToken());
-        Optional<OtpModel> otpModel = otpRepository.findByUserAndVerifiedIsFalse(CurrentUser.get().getUserSecureId());
-        Optional<UserModel> userModel = userRepository.findBySecureIdAndDeletedAtIsNull(CurrentUser.get().getUserSecureId());
-        Optional<ProfileModel> profileModel = profileRepository.findByUserAndDeletedAtIsNull(CurrentUser.get().getUserSecureId());
+        Optional<OtpModel> otpModel = otpRepository.getOtp(CurrentUser.get().getUserSecureId());
+        Optional<UserModel> userModel = userRepository.getUserBySecureId(CurrentUser.get().getUserSecureId());
+        Optional<ProfileModel> profileModel = profileRepository.getProfileBySecureId(CurrentUser.get().getUserSecureId());
 
-        if (!otpRepository.existsByUserAndVerifiedIsFalse(CurrentUser.get().getUserSecureId()) || profileModel.isEmpty() || tokenModel.isEmpty() || otpModel.isEmpty() || userModel.isEmpty()) {
+        if (otpRepository.getUnverifiedOtp(CurrentUser.get().getUserSecureId()).isEmpty() || profileModel.isEmpty() || tokenModel.isEmpty() || otpModel.isEmpty() || userModel.isEmpty()) {
             throw new AppException(NOT_FOUND_MESSAGE);
         }
 
@@ -231,8 +231,8 @@ public class UserService implements UserPresenter {
     public BaseResponse<Boolean> forgotPassword(ForgotPasswordRequest request) {
         BaseResponse<Boolean> response = new BaseResponse<>();
 
-        Optional<ProfileModel> profileModel = profileRepository.findByEmailAndDeletedAtIsNull(request.getEmail());
-        Optional<UserModel> userModel = userRepository.findBySecureIdAndActiveIsTrueAndDeletedAtIsNull(profileModel.map(ProfileModel::getUser).orElse(null));
+        Optional<ProfileModel> profileModel = profileRepository.getProfileByEmail(request.getEmail());
+        Optional<UserModel> userModel = userRepository.getActiveUserBySecureId(profileModel.map(ProfileModel::getUser).orElse(null));
 
         if (userModel.isEmpty()) {
             throw new AppException(EMAIL_NOT_FOUND);
@@ -256,7 +256,7 @@ public class UserService implements UserPresenter {
     public BaseResponse<Boolean> resetPassword(ResetPasswordRequest request) {
         BaseResponse<Boolean> response = new BaseResponse<>();
 
-        List<ResetModel> resetModelList = resetRepository.findByCodeAndVerifiedIsFalse(request.getCode());
+        List<ResetModel> resetModelList = resetRepository.getReset(request.getCode());
         ResetModel resetModel = null;
 
         for (ResetModel model : resetModelList) {
@@ -270,7 +270,7 @@ public class UserService implements UserPresenter {
             throw new AppException(INVALID_CODE);
         }
 
-        Optional<UserModel> userModel = userRepository.findBySecureIdAndActiveIsTrueAndDeletedAtIsNull(CurrentUser.get().getSecureId());
+        Optional<UserModel> userModel = userRepository.getActiveUserBySecureId(CurrentUser.get().getSecureId());
 
         if (userModel.isEmpty()) {
             throw new AppException(NOT_FOUND_MESSAGE);
@@ -296,7 +296,7 @@ public class UserService implements UserPresenter {
     public BaseResponse<Boolean> changePassword(ChangePasswordRequest request) {
         BaseResponse<Boolean> response = new BaseResponse<>();
 
-        Optional<UserModel> model = userRepository.findBySecureIdAndDeletedAtIsNull(CurrentUser.get().getUserSecureId());
+        Optional<UserModel> model = userRepository.getUserBySecureId(CurrentUser.get().getUserSecureId());
 
         if (model.isEmpty()) {
             throw new AppException(NOT_FOUND_MESSAGE);

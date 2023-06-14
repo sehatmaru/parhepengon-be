@@ -51,8 +51,8 @@ public class GroupMemberService implements GroupMemberPresenter {
     public BaseResponse<Boolean> add(AddKickMemberRequest request) {
         BaseResponse<Boolean> response = new BaseResponse<>();
 
-        Optional<GroupMemberModel> model = groupMemberRepository.findByGroupAndMemberAndLeaveAtIsNull(request.getGroup(), request.getMember());
-        Optional<UserModel> user = userRepository.findBySecureIdAndActiveIsTrueAndDeletedAtIsNull(request.getMember());
+        Optional<GroupMemberModel> model = groupMemberRepository.getGroupMember(request.getGroup(), request.getMember());
+        Optional<UserModel> user = userRepository.getActiveUserBySecureId(request.getMember());
 
         if (model.isPresent()) {
             throw new AppException(USER_EXIST_ON_GROUP);
@@ -79,7 +79,7 @@ public class GroupMemberService implements GroupMemberPresenter {
     public BaseResponse<Boolean> kick(AddKickMemberRequest request) {
         BaseResponse<Boolean> response = new BaseResponse<>();
 
-        Optional<GroupMemberModel> model = groupMemberRepository.findByGroupAndMemberAndLeaveAtIsNull(request.getGroup(), request.getMember());
+        Optional<GroupMemberModel> model = groupMemberRepository.getGroupMember(request.getGroup(), request.getMember());
 
         if (model.isEmpty()) {
             throw new AppException(NOT_FOUND_MESSAGE);
@@ -102,7 +102,7 @@ public class GroupMemberService implements GroupMemberPresenter {
     public BaseResponse<Boolean> leave(BaseRequest request) {
         BaseResponse<Boolean> response = new BaseResponse<>();
 
-        Optional<GroupMemberModel> model = groupMemberRepository.findByGroupAndMemberAndLeaveAtIsNull(request.getSecureId(), CurrentUser.get().getUserSecureId());
+        Optional<GroupMemberModel> model = groupMemberRepository.getGroupMember(request.getSecureId(), CurrentUser.get().getUserSecureId());
 
         if (model.isEmpty()) {
             throw new AppException(NOT_FOUND_MESSAGE);
@@ -115,10 +115,10 @@ public class GroupMemberService implements GroupMemberPresenter {
             GroupModel groupOwner = groupService.getGroupOwner(request.getSecureId());
 
             if (groupOwner != null) {
-                if (groupMemberRepository.countAllByGroupAndLeaveAtIsNull(request.getSecureId()) == 0) {
+                if (groupMemberRepository.countGroupMember(request.getSecureId()) == 0) {
                     groupOwner.setDeletedAt(new Date());
                 } else {
-                    groupOwner.setOwner(groupMemberRepository.findFirstByGroupAndLeaveAtIsNull(request.getSecureId()).getMember());
+                    groupOwner.setOwner(groupMemberRepository.getNewOwner(request.getSecureId(), CurrentUser.get().getSecureId()).getMember());
                 }
 
                 groupRepository.save(groupOwner);
@@ -135,6 +135,6 @@ public class GroupMemberService implements GroupMemberPresenter {
     }
 
     public List<GroupMemberModel> getMemberList(String secureId) {
-        return groupMemberRepository.findAllByGroupAndLeaveAtIsNull(secureId).orElse(Collections.emptyList());
+        return groupMemberRepository.getGroupMemberList(secureId).orElse(Collections.emptyList());
     }
 }

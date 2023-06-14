@@ -37,8 +37,8 @@ public class ProfileService implements ProfilePresenter {
     public BaseResponse<Boolean> update(EditProfileRequest request) {
         BaseResponse<Boolean> response = new BaseResponse<>();
 
-        Optional<ProfileModel> model = profileRepository.findByUserAndDeletedAtIsNull(CurrentUser.get().getUserSecureId());
-        Optional<UserModel> userModel = userRepository.findBySecureIdAndActiveIsTrueAndDeletedAtIsNull(CurrentUser.get().getUserSecureId());
+        Optional<ProfileModel> model = profileRepository.getProfileBySecureId(CurrentUser.get().getUserSecureId());
+        Optional<UserModel> userModel = userRepository.getActiveUserBySecureId(CurrentUser.get().getUserSecureId());
 
         if (model.isEmpty() || userModel.isEmpty()) {
             throw new AppException(NOT_FOUND_MESSAGE);
