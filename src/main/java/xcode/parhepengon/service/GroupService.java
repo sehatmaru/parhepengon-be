@@ -72,7 +72,7 @@ public class GroupService implements GroupPresenter {
     public BaseResponse<Boolean> edit(CreateGroupRequest request) {
         BaseResponse<Boolean> response = new BaseResponse<>();
 
-        GroupModel model = checkGroup(request.getSecureId());
+        GroupModel model = getGroupOwner(request.getSecureId());
 
         try {
             groupRepository.save(groupMapper.editModel(model, request));
@@ -91,7 +91,7 @@ public class GroupService implements GroupPresenter {
     public BaseResponse<Boolean> delete(BaseRequest request) {
         BaseResponse<Boolean> response = new BaseResponse<>();
 
-        GroupModel model = checkGroup(request.getSecureId());
+        GroupModel model = getGroupOwner(request.getSecureId());
 
         try {
             groupRepository.save(groupMapper.deleteModel(model));
@@ -132,7 +132,7 @@ public class GroupService implements GroupPresenter {
         return response;
     }
 
-    private GroupModel checkGroup(String secureId) {
+    public GroupModel getGroupOwner(String secureId) {
         Optional<GroupModel> model = groupRepository.findBySecureIdAndDeletedAtIsNull(secureId);
 
         if (model.isEmpty()) {

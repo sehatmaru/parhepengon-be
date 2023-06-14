@@ -93,4 +93,14 @@ public class GroupAPI {
                 .body(response);
     }
 
+    @PostMapping("/member/leave")
+    ResponseEntity<BaseResponse<Boolean>> leave(@RequestBody @Validated BaseRequest request) {
+        BaseResponse<Boolean> response = groupMemberPresenter.leave(request);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(response);
+    }
+
 }

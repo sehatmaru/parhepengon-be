@@ -17,5 +17,6 @@ public enum EventEnum {
     UPDATE_PROFILE,
     UPDATE_SETTING,
     ADD_MEMBER,
-    KICK_MEMBER
+    KICK_MEMBER,
+    LEAVE_GROUP
 }

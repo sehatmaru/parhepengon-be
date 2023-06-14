@@ -11,4 +11,6 @@ import java.util.Optional;
 public interface GroupMemberRepository extends JpaRepository<GroupMemberModel, String> {
     Optional<GroupMemberModel> findByGroupAndMemberAndLeaveAtIsNull(String group, String member);
     Optional<List<GroupMemberModel>> findAllByGroupAndLeaveAtIsNull(String secureId);
+    GroupMemberModel findFirstByGroupAndLeaveAtIsNull(String secureId);
+    int countAllByGroupAndLeaveAtIsNull(String secureId);
 }
