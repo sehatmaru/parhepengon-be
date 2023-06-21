@@ -71,11 +71,19 @@ public class BillService implements BillPresenter {
 
         try {
             BillModel model = billMapper.createRequestToModel(request);
-            billRepository.save(model);
 
             List<Bill> bills = calculateBills(request.getMember(), request.getAmount(), request.getMethod());
+            bills.forEach(e -> billMemberRepository.save(billMemberMapper.setBill(model.getSecureId(), e, model.getPrepaidBy())));
 
-            bills.forEach(e -> billMemberRepository.save(billMemberMapper.setBill(model.getSecureId(), e)));
+            for (Bill b : bills) {
+                if (b.getMember().equals(model.getPrepaidBy())) {
+                    model.setPaidAmount(b.getAmount());
+                    model.setUnpaidAmount(model.getTotalAmount().subtract(model.getPaidAmount()));
+                    break;
+                }
+            }
+
+            billRepository.save(model);
 
             historyService.addBillHistory(billMapper.createBillHistory(ADD_BILL, null, model.getSecureId(), profileService.getUserFullName()));
 
@@ -106,7 +114,6 @@ public class BillService implements BillPresenter {
             BillModel updated = billMapper.editModel(model, request);
             billUpdate = billMapper.setNewBill(updated, billUpdate);
 
-            billRepository.save(updated);
 
             List<Bill> bills = calculateBills(request.getMember(), request.getAmount(), request.getMethod());
 
@@ -117,8 +124,18 @@ public class BillService implements BillPresenter {
                     throw new AppException(NOT_FOUND_MESSAGE);
                 }
 
-                billMemberRepository.save(billMemberMapper.updateBill(memberModel.get(), e));
+                billMemberRepository.save(billMemberMapper.updateBill(memberModel.get(), e, updated.getPrepaidBy()));
             });
+
+            for (Bill b : bills) {
+                if (b.getMember().equals(updated.getPrepaidBy())) {
+                    updated.setPaidAmount(b.getAmount());
+                    updated.setUnpaidAmount(updated.getTotalAmount().subtract(updated.getPaidAmount()));
+                    break;
+                }
+            }
+
+            billRepository.save(updated);
 
             historyService.addBillHistory(billUpdate);
 

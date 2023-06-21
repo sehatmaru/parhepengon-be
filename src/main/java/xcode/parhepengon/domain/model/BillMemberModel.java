@@ -38,11 +38,11 @@ public class BillMemberModel {
     private BigDecimal amountPercentage;
 
     @Column(name = "settle")
-    private Boolean settle;
+    private boolean settle = false;
 
     @Column(name = "settle_at")
     private Date settleAt;
 
     @Column(name = "deleted")
-    private Boolean deleted = false;
+    private boolean deleted = false;
 }

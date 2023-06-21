@@ -42,6 +42,12 @@ public class BillModel {
     @Column(name = "paid_amount")
     private BigDecimal paidAmount;
 
+    @Column(name = "unpaid_amount")
+    private BigDecimal unpaidAmount;
+
+    @Column(name = "prepaid_by")
+    private String prepaidBy;
+
     @Column(name = "category")
     private BillTypeEnum category;
 
@@ -49,7 +55,7 @@ public class BillModel {
     private SplitTypeEnum method;
 
     @Column(name = "settle")
-    private Boolean settle;
+    private boolean settle = false;
 
     @Column(name = "settle_at")
     private Date settleAt;

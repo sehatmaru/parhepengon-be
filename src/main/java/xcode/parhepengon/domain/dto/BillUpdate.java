@@ -19,9 +19,9 @@ public class BillUpdate {
     private BigDecimal oldTotalAmount;
     private BillTypeEnum oldCategory;
     private SplitTypeEnum oldMethod;
-    private Boolean oldSettle;
+    private boolean oldSettle;
     private BigDecimal newTotalAmount;
     private BillTypeEnum newCategory;
     private SplitTypeEnum newMethod;
-    private Boolean newSettle;
+    private boolean newSettle;
 }

@@ -4,15 +4,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import xcode.parhepengon.domain.request.BaseRequest;
 import xcode.parhepengon.domain.request.group.AddKickMemberRequest;
 import xcode.parhepengon.domain.request.group.CreateGroupRequest;
 import xcode.parhepengon.domain.response.BaseResponse;
 import xcode.parhepengon.domain.response.SecureIdResponse;
+import xcode.parhepengon.domain.response.group.GroupResponse;
 import xcode.parhepengon.domain.response.group.MemberResponse;
 import xcode.parhepengon.presenter.GroupMemberPresenter;
 import xcode.parhepengon.presenter.GroupPresenter;
@@ -96,6 +94,16 @@ public class GroupAPI {
     @PostMapping("/member/leave")
     ResponseEntity<BaseResponse<Boolean>> leave(@RequestBody @Validated BaseRequest request) {
         BaseResponse<Boolean> response = groupMemberPresenter.leave(request);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(response);
+    }
+
+    @GetMapping("/list")
+    ResponseEntity<BaseResponse<List<GroupResponse>>> getList() {
+        BaseResponse<List<GroupResponse>> response = groupPresenter.getList();
 
         return ResponseEntity
                 .status(HttpStatus.OK)

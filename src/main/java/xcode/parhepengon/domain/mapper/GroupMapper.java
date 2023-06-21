@@ -4,9 +4,12 @@ import xcode.parhepengon.domain.dto.GroupUpdate;
 import xcode.parhepengon.domain.enums.GroupHistoryEventEnum;
 import xcode.parhepengon.domain.model.*;
 import xcode.parhepengon.domain.request.group.CreateGroupRequest;
+import xcode.parhepengon.domain.response.group.GroupResponse;
 import xcode.parhepengon.domain.response.group.MemberResponse;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import static xcode.parhepengon.shared.Utils.generateSecureId;
 
@@ -110,6 +113,23 @@ public class GroupMapper {
         } else {
             return null;
         }
+    }
+
+    public List<GroupResponse> generateGroupResponse(List<GroupModel> groupModels) {
+        List<GroupResponse> result = new ArrayList<>();
+
+        if (groupModels != null && !groupModels.isEmpty()) {
+            for (GroupModel group : groupModels) {
+                GroupResponse response = new GroupResponse();
+                response.setSecureId(group.getSecureId());
+                response.setName(group.getName());
+                response.setCategory(group.getCategory());
+
+                result.add(response);
+            }
+        }
+
+        return result;
     }
 
 }

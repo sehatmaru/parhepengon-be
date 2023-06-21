@@ -5,26 +5,22 @@ import org.springframework.stereotype.Service;
 import xcode.parhepengon.domain.dto.GroupUpdate;
 import xcode.parhepengon.domain.mapper.GroupMapper;
 import xcode.parhepengon.domain.mapper.GroupMemberMapper;
-import xcode.parhepengon.domain.model.CurrentUser;
-import xcode.parhepengon.domain.model.GroupMemberModel;
-import xcode.parhepengon.domain.model.GroupModel;
-import xcode.parhepengon.domain.model.ProfileModel;
-import xcode.parhepengon.domain.repository.GroupMemberRepository;
-import xcode.parhepengon.domain.repository.GroupRepository;
-import xcode.parhepengon.domain.repository.ProfileRepository;
+import xcode.parhepengon.domain.model.*;
+import xcode.parhepengon.domain.repository.*;
 import xcode.parhepengon.domain.request.BaseRequest;
 import xcode.parhepengon.domain.request.group.CreateGroupRequest;
 import xcode.parhepengon.domain.response.BaseResponse;
 import xcode.parhepengon.domain.response.SecureIdResponse;
+import xcode.parhepengon.domain.response.group.GroupResponse;
 import xcode.parhepengon.domain.response.group.MemberResponse;
 import xcode.parhepengon.exception.AppException;
 import xcode.parhepengon.presenter.GroupPresenter;
 
+import java.math.BigDecimal;
 import java.util.*;
 
 import static xcode.parhepengon.domain.enums.GroupHistoryEventEnum.*;
-import static xcode.parhepengon.shared.ResponseCode.NOT_AUTHORIZED_MESSAGE;
-import static xcode.parhepengon.shared.ResponseCode.NOT_FOUND_MESSAGE;
+import static xcode.parhepengon.shared.ResponseCode.*;
 
 @Service
 public class GroupService implements GroupPresenter {
@@ -45,6 +41,12 @@ public class GroupService implements GroupPresenter {
 
     @Autowired
     private ProfileRepository profileRepository;
+
+    @Autowired
+    private BillMemberRepository billMemberRepository;
+
+    @Autowired
+    private BillRepository billRepository;
 
     private final GroupMapper groupMapper = new GroupMapper();
     private final GroupMemberMapper groupMemberMapper = new GroupMemberMapper();
@@ -142,6 +144,28 @@ public class GroupService implements GroupPresenter {
         return response;
     }
 
+    @Override
+    public BaseResponse<List<GroupResponse>> getList() {
+        BaseResponse<List<GroupResponse>> response = new BaseResponse<>();
+
+        List<GroupModel> groupModels = groupRepository.getOwnerGroups(CurrentUser.get().getUserSecureId());
+
+        if (groupModels.isEmpty()) {
+            response.setSuccess(Collections.emptyList());
+        } else {
+            try {
+                List<GroupResponse> memberModels = groupMapper.generateGroupResponse(groupModels);
+                memberModels.forEach(e -> e.setTotalBalance(calculateUserBalance(billRepository.getGroupBills(e.getSecureId()))));
+
+                response.setSuccess(memberModels);
+            } catch (Exception e) {
+                throw new AppException(e.toString());
+            }
+        }
+
+        return response;
+    }
+
     public GroupModel getGroupOwner(String secureId) {
         Optional<GroupModel> model = groupRepository.getGroup(secureId);
 
@@ -154,5 +178,21 @@ public class GroupService implements GroupPresenter {
         }
 
         return model.get();
+    }
+
+    private BigDecimal calculateUserBalance(List<BillModel> bill) {
+        BigDecimal result = BigDecimal.ZERO;
+
+        for (BillModel b : bill) {
+            List<BillMemberModel> billMemberModels = billMemberRepository.getBillMemberList(b.getSecureId());
+
+            for (BillMemberModel m : billMemberModels) {
+                if (Objects.equals(m.getMember(), CurrentUser.get().getUserSecureId())) {
+                    result = m.isSettle() ? result.add(m.getAmount()) : result.subtract(m.getAmount());
+                }
+            }
+        }
+
+        return result;
     }
 }

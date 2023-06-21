@@ -29,7 +29,7 @@ public class BillMapper {
             model.setMethod(request.getMethod());
             model.setTotalAmount(request.getAmount());
             model.setGroup(request.getGroup());
-            model.setPaidAmount(BigDecimal.ZERO);
+            model.setPrepaidBy(request.getPrepaidBy());
             model.setCreatedAt(new Date());
 
             return model;
@@ -45,6 +45,7 @@ public class BillMapper {
             model.setMethod(request.getMethod());
             model.setTotalAmount(request.getAmount());
             model.setGroup(request.getGroup());
+            model.setPrepaidBy(request.getPrepaidBy());
             model.setUpdatedAt(new Date());
 
             return model;
@@ -79,7 +80,7 @@ public class BillMapper {
     public BillUpdate setOldBill(BillModel bill, BillUpdate billUpdate) {
         if (bill != null && billUpdate != null) {
             billUpdate.setOldCategory(bill.getCategory());
-            billUpdate.setOldSettle(bill.getSettle());
+            billUpdate.setOldSettle(bill.isSettle());
             billUpdate.setOldMethod(bill.getMethod());
             billUpdate.setOldTitle(bill.getTitle());
             billUpdate.setOldTotalAmount(bill.getTotalAmount());
@@ -93,7 +94,7 @@ public class BillMapper {
     public BillUpdate setNewBill(BillModel bill, BillUpdate billUpdate) {
         if (bill != null && billUpdate != null) {
             billUpdate.setNewCategory(bill.getCategory());
-            billUpdate.setNewSettle(bill.getSettle());
+            billUpdate.setNewSettle(bill.isSettle());
             billUpdate.setNewMethod(bill.getMethod());
             billUpdate.setNewTitle(bill.getTitle());
             billUpdate.setNewTotalAmount(bill.getTotalAmount());
@@ -115,7 +116,7 @@ public class BillMapper {
             model.setTotalAmount(billModel.getTotalAmount());
             model.setCreatedAt(billModel.getCreatedAt());
             model.setLastUpdated(billModel.getUpdatedAt());
-            model.setSettle(billModel.getSettle());
+            model.setSettle(billModel.isSettle());
             model.setSettleAt(billModel.getSettleAt());
             model.setHistory(generateBillHistoryResponse(billHistoryModels));
             model.setMember(generateBillMemberResponse(billMemberModels));

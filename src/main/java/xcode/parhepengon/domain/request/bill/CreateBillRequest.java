@@ -26,6 +26,9 @@ public class CreateBillRequest extends BaseRequest {
 
     private BigDecimal amount;
 
+    @NotBlank()
+    private String prepaidBy;
+
     private List<Bill> member;
 
     public CreateBillRequest() {

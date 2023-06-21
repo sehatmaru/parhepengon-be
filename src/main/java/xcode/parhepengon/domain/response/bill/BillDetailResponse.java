@@ -19,7 +19,7 @@ public class BillDetailResponse {
     private BigDecimal totalAmount;
     private BillTypeEnum category;
     private SplitTypeEnum method;
-    private Boolean settle;
+    private boolean settle;
     private Date settleAt;
     private String title;
     private List<BillHistoryResponse> history;

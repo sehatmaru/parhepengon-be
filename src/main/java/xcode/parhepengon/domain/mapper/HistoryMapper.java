@@ -98,9 +98,9 @@ public class HistoryMapper {
                 result += "Kategori menjadi " + bill.getNewCategory().name() + ".";
             }
 
-            if (!Objects.equals(bill.getOldSettle(), bill.getNewSettle())) {
+            if (!Objects.equals(bill.isOldSettle(), bill.isNewSettle())) {
                 result += "tagihan menjadi ";
-                result += Boolean.TRUE.equals(bill.getNewSettle()) ? "belum selesai." : "sudah selesai.";
+                result += Boolean.TRUE.equals(bill.isNewSettle()) ? "belum selesai." : "sudah selesai.";
             }
 
             if (!Objects.equals(bill.getOldTitle(), bill.getNewTitle())) {
