@@ -5,6 +5,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import xcode.parhepengon.domain.enums.BillTypeEnum;
+import xcode.parhepengon.domain.enums.SplitTypeEnum;
 import xcode.parhepengon.domain.request.BaseRequest;
 import xcode.parhepengon.domain.request.bill.CreateBillRequest;
 import xcode.parhepengon.domain.request.comment.AddCommentRequest;
@@ -61,7 +63,7 @@ public class BillAPI {
     }
 
     @PostMapping("/comment/add")
-    ResponseEntity<BaseResponse<SecureIdResponse>> addHistory(@RequestBody @Validated AddCommentRequest request) {
+    ResponseEntity<BaseResponse<SecureIdResponse>> addComment(@RequestBody @Validated AddCommentRequest request) {
         BaseResponse<SecureIdResponse> response = historyPresenter.addComment(request);
 
         return ResponseEntity
@@ -90,4 +92,23 @@ public class BillAPI {
                 .body(response);
     }
 
+    @GetMapping("category/list")
+    ResponseEntity<BaseResponse<List<BillTypeEnum>>> getCategoryList() {
+        BaseResponse<List<BillTypeEnum>> response = billPresenter.getCategoryList();
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(response);
+    }
+
+    @GetMapping("method/list")
+    ResponseEntity<BaseResponse<List<SplitTypeEnum>>> getMethodList() {
+        BaseResponse<List<SplitTypeEnum>> response = billPresenter.getMethodList();
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(response);
+    }
 }

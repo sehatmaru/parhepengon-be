@@ -1,5 +1,6 @@
 package xcode.parhepengon.presenter;
 
+import xcode.parhepengon.domain.enums.GroupTypeEnum;
 import xcode.parhepengon.domain.request.BaseRequest;
 import xcode.parhepengon.domain.request.group.CreateGroupRequest;
 import xcode.parhepengon.domain.response.BaseResponse;
@@ -17,4 +18,5 @@ public interface GroupPresenter {
     BaseResponse<List<MemberResponse>> getMemberList(BaseRequest request);
     BaseResponse<List<GroupResponse>> getList();
     BaseResponse<GroupDetailResponse> detail(BaseRequest request);
+    BaseResponse<List<GroupTypeEnum>> getCategoryList();
 }

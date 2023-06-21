@@ -3,6 +3,7 @@ package xcode.parhepengon.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import xcode.parhepengon.domain.dto.GroupUpdate;
+import xcode.parhepengon.domain.enums.GroupTypeEnum;
 import xcode.parhepengon.domain.mapper.GroupMapper;
 import xcode.parhepengon.domain.mapper.GroupMemberMapper;
 import xcode.parhepengon.domain.model.*;
@@ -206,6 +207,16 @@ public class GroupService implements GroupPresenter {
         }
 
         return response;    }
+
+    @Override
+    public BaseResponse<List<GroupTypeEnum>> getCategoryList() {
+        BaseResponse<List<GroupTypeEnum>> response = new BaseResponse<>();
+        List<GroupTypeEnum> list = Arrays.asList(GroupTypeEnum.values());
+
+        response.setSuccess(list);
+
+        return response;
+    }
 
     public GroupModel getGroupOwner(String secureId) {
         Optional<GroupModel> model = groupRepository.getGroup(secureId);

@@ -1,5 +1,7 @@
 package xcode.parhepengon.presenter;
 
+import xcode.parhepengon.domain.enums.BillTypeEnum;
+import xcode.parhepengon.domain.enums.SplitTypeEnum;
 import xcode.parhepengon.domain.request.BaseRequest;
 import xcode.parhepengon.domain.request.bill.CreateBillRequest;
 import xcode.parhepengon.domain.response.BaseResponse;
@@ -15,4 +17,6 @@ public interface BillPresenter {
     BaseResponse<Boolean> delete(BaseRequest request);
     BaseResponse<BillDetailResponse> detail(BaseRequest request);
     BaseResponse<List<BillResponse>> list();
+    BaseResponse<List<BillTypeEnum>> getCategoryList();
+    BaseResponse<List<SplitTypeEnum>> getMethodList();
 }

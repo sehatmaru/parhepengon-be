@@ -3,6 +3,7 @@ package xcode.parhepengon.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import xcode.parhepengon.domain.dto.BillUpdate;
+import xcode.parhepengon.domain.enums.BillTypeEnum;
 import xcode.parhepengon.domain.enums.SplitTypeEnum;
 import xcode.parhepengon.domain.mapper.BillMapper;
 import xcode.parhepengon.domain.mapper.BillMemberMapper;
@@ -224,6 +225,26 @@ public class BillService implements BillPresenter {
                 throw new AppException(e.toString());
             }
         }
+
+        return response;
+    }
+
+    @Override
+    public BaseResponse<List<BillTypeEnum>> getCategoryList() {
+        BaseResponse<List<BillTypeEnum>> response = new BaseResponse<>();
+        List<BillTypeEnum> list = Arrays.asList(BillTypeEnum.values());
+
+        response.setSuccess(list);
+
+        return response;
+    }
+
+    @Override
+    public BaseResponse<List<SplitTypeEnum>> getMethodList() {
+        BaseResponse<List<SplitTypeEnum>> response = new BaseResponse<>();
+        List<SplitTypeEnum> list = Arrays.asList(SplitTypeEnum.values());
+
+        response.setSuccess(list);
 
         return response;
     }

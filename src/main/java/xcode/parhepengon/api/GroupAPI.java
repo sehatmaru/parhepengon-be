@@ -5,6 +5,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import xcode.parhepengon.domain.enums.GroupTypeEnum;
 import xcode.parhepengon.domain.request.BaseRequest;
 import xcode.parhepengon.domain.request.group.AddKickMemberRequest;
 import xcode.parhepengon.domain.request.group.CreateGroupRequest;
@@ -115,6 +116,16 @@ public class GroupAPI {
     @PostMapping("/detail")
     ResponseEntity<BaseResponse<GroupDetailResponse>> detail(@RequestBody @Validated BaseRequest request) {
         BaseResponse<GroupDetailResponse> response = groupPresenter.detail(request);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(response);
+    }
+
+    @GetMapping("category/list")
+    ResponseEntity<BaseResponse<List<GroupTypeEnum>>> getCategoryList() {
+        BaseResponse<List<GroupTypeEnum>> response = groupPresenter.getCategoryList();
 
         return ResponseEntity
                 .status(HttpStatus.OK)
