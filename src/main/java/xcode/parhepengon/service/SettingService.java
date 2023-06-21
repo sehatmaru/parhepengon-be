@@ -8,6 +8,7 @@ import xcode.parhepengon.domain.model.SettingModel;
 import xcode.parhepengon.domain.repository.SettingRepository;
 import xcode.parhepengon.domain.request.setting.SettingChangeRequest;
 import xcode.parhepengon.domain.response.BaseResponse;
+import xcode.parhepengon.domain.response.setting.SettingsResponse;
 import xcode.parhepengon.exception.AppException;
 import xcode.parhepengon.presenter.SettingPresenter;
 
@@ -24,7 +25,6 @@ public class SettingService implements SettingPresenter {
 
     @Autowired
     private SettingRepository settingRepository;
-
 
     private final SettingMapper settingMapper = new SettingMapper();
 
@@ -44,6 +44,25 @@ public class SettingService implements SettingPresenter {
             historyService.addAccountHistory(UPDATE_SETTING, null);
 
             response.setSuccess(true);
+        } catch (Exception e) {
+            throw new AppException(e.toString());
+        }
+
+        return response;
+    }
+
+    @Override
+    public BaseResponse<SettingsResponse> getAll() {
+        BaseResponse<SettingsResponse> response = new BaseResponse<>();
+
+        Optional<SettingModel> model = settingRepository.findByUser(CurrentUser.get().getUserSecureId());
+
+        if (model.isEmpty()) {
+            throw new AppException(NOT_FOUND_MESSAGE);
+        }
+
+        try {
+            response.setSuccess(settingMapper.modelToResponse(model.get()));
         } catch (Exception e) {
             throw new AppException(e.toString());
         }

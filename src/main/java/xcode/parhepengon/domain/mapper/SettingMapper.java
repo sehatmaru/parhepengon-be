@@ -4,6 +4,7 @@ import xcode.parhepengon.domain.enums.CurrencyEnum;
 import xcode.parhepengon.domain.enums.LanguageEnum;
 import xcode.parhepengon.domain.model.SettingModel;
 import xcode.parhepengon.domain.request.setting.SettingChangeRequest;
+import xcode.parhepengon.domain.response.setting.SettingsResponse;
 
 import java.util.Date;
 
@@ -22,6 +23,19 @@ public class SettingMapper {
             model.setUpdatedAt(new Date());
 
             return model;
+        } else {
+            return null;
+        }
+    }
+
+    public SettingsResponse modelToResponse(SettingModel model) {
+        if (model != null) {
+            SettingsResponse response = new SettingsResponse();
+            response.setCurrency(model.getCurrency());
+            response.setLanguage(model.getLanguage());
+            response.setUpdatedAt(model.getUpdatedAt());
+
+            return response;
         } else {
             return null;
         }
