@@ -2,6 +2,7 @@ package xcode.parhepengon.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import xcode.parhepengon.domain.dto.GroupUpdate;
 import xcode.parhepengon.domain.mapper.GroupMapper;
 import xcode.parhepengon.domain.mapper.GroupMemberMapper;
 import xcode.parhepengon.domain.model.CurrentUser;
@@ -24,8 +25,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-import static xcode.parhepengon.domain.enums.EventEnum.*;
-import static xcode.parhepengon.shared.ResponseCode.*;
+import static xcode.parhepengon.domain.enums.GroupHistoryEventEnum.*;
+import static xcode.parhepengon.shared.ResponseCode.NOT_AUTHORIZED_MESSAGE;
+import static xcode.parhepengon.shared.ResponseCode.NOT_FOUND_MESSAGE;
 
 @Service
 public class GroupService implements GroupPresenter {
@@ -34,6 +36,9 @@ public class GroupService implements GroupPresenter {
 
     @Autowired
     private GroupMemberService groupMemberService;
+
+    @Autowired
+    private ProfileService profileService;
 
     @Autowired
     private GroupRepository groupRepository;
@@ -58,7 +63,7 @@ public class GroupService implements GroupPresenter {
             groupRepository.save(model);
             groupMemberRepository.save(memberModel);
 
-            historyService.addHistory(CREATE_GROUP, null);
+            historyService.addGroupHistory(groupMapper.createGroupHistory(CREATE_GROUP, null, model.getSecureId(), profileService.getUserFullName()));
 
             response.setSuccess(new SecureIdResponse(model.getSecureId()));
         } catch (Exception e) {
@@ -73,11 +78,14 @@ public class GroupService implements GroupPresenter {
         BaseResponse<Boolean> response = new BaseResponse<>();
 
         GroupModel model = getGroupOwner(request.getSecureId());
+        GroupUpdate groupUpdate = groupMapper.createGroupHistory(EDIT_GROUP, model, model.getSecureId(), profileService.getUserFullName());
 
         try {
-            groupRepository.save(groupMapper.editModel(model, request));
+            GroupModel updated = groupMapper.editModel(model, request);
+            groupUpdate = groupMapper.setNewGroup(updated, groupUpdate);
 
-            historyService.addHistory(EDIT_GROUP, null);
+            groupRepository.save(updated);
+            historyService.addGroupHistory(groupUpdate);
 
             response.setSuccess(true);
         } catch (Exception e) {
@@ -96,7 +104,7 @@ public class GroupService implements GroupPresenter {
         try {
             groupRepository.save(groupMapper.deleteModel(model));
 
-            historyService.addHistory(DELETE_GROUP, null);
+            historyService.addGroupHistory(groupMapper.createGroupHistory(DELETE_GROUP, null, "", profileService.getUserFullName()));
 
             response.setSuccess(true);
         } catch (Exception e) {

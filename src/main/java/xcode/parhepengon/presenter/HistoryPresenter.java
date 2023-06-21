@@ -1,9 +1,9 @@
 package xcode.parhepengon.presenter;
 
+import xcode.parhepengon.domain.request.comment.AddCommentRequest;
 import xcode.parhepengon.domain.response.BaseResponse;
-
-import java.util.List;
+import xcode.parhepengon.domain.response.SecureIdResponse;
 
 public interface HistoryPresenter {
-//    BaseResponse<List<HistoryResponse>> getList();
+    BaseResponse<SecureIdResponse> addComment(AddCommentRequest request);
 }

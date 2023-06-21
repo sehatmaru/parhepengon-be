@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import xcode.parhepengon.domain.enums.BillTypeEnum;
 import xcode.parhepengon.domain.enums.SplitTypeEnum;
-import xcode.parhepengon.domain.model.Bill;
+import xcode.parhepengon.domain.dto.Bill;
 import xcode.parhepengon.domain.request.BaseRequest;
 
 import javax.validation.constraints.NotBlank;

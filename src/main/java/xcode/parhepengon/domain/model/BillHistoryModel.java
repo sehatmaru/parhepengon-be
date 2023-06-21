@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicUpdate;
-import xcode.parhepengon.domain.enums.EventEnum;
+import xcode.parhepengon.domain.enums.BillHistoryEventEnum;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -13,11 +13,11 @@ import java.util.Date;
 @Data
 @Builder
 @Entity
-@Table(name = "t_history")
+@Table(name = "t_bill_history")
 @DynamicUpdate
 @NoArgsConstructor
 @AllArgsConstructor
-public class HistoryModel {
+public class BillHistoryModel {
     
     @Id @Column(name = "id", length = 36) @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private int id;
@@ -25,15 +25,22 @@ public class HistoryModel {
     @Column(name = "secure_id")
     private String secureId;
 
-    @Column(name = "user_secure_id")
-    private String userSecureId;
+    @Column(name = "bill_secure_id")
+    private String bill;
+
+    @Column(name = "created_by")
+    private String createdBy;
+
+    @Column(name = "comment")
+    private String comment;
 
     @Column(name = "event")
-    private EventEnum event;
-
-    @Column(name = "username")
-    private String username;
+    private BillHistoryEventEnum event;
 
     @Column(name = "created_at")
     private Date createdAt;
+
+    @Column(name = "updated_at")
+    private Date updatedAt;
+
 }

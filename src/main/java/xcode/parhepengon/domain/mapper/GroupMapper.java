@@ -1,9 +1,8 @@
 package xcode.parhepengon.domain.mapper;
 
-import xcode.parhepengon.domain.model.CurrentUser;
-import xcode.parhepengon.domain.model.GroupMemberModel;
-import xcode.parhepengon.domain.model.GroupModel;
-import xcode.parhepengon.domain.model.ProfileModel;
+import xcode.parhepengon.domain.dto.GroupUpdate;
+import xcode.parhepengon.domain.enums.GroupHistoryEventEnum;
+import xcode.parhepengon.domain.model.*;
 import xcode.parhepengon.domain.request.group.CreateGroupRequest;
 import xcode.parhepengon.domain.response.group.MemberResponse;
 
@@ -57,6 +56,57 @@ public class GroupMapper {
             response.setSecureId(memberModel.getMember());
 
             return response;
+        } else {
+            return null;
+        }
+    }
+
+    public GroupUpdate createGroupHistory(GroupHistoryEventEnum event, GroupModel oldGroup, String groupSecureId, String fullName) {
+        GroupUpdate model = new GroupUpdate();
+        model.setFullName(fullName);
+        model.setGroupSecureId(groupSecureId);
+        model.setEvent(event);
+
+        if (oldGroup != null) {
+            return setOldGroup(oldGroup, model);
+        } else {
+            return model;
+        }
+    }
+
+    public GroupUpdate createGroupHistory(GroupHistoryEventEnum event, GroupModel oldGroup, String groupSecureId, String fullName, String kickedName) {
+        GroupUpdate model = new GroupUpdate();
+        model.setFullName(fullName);
+        model.setGroupSecureId(groupSecureId);
+        model.setEvent(event);
+        model.setDeletedUserName(kickedName);
+
+        if (oldGroup != null) {
+            return setOldGroup(oldGroup, model);
+        } else {
+            return model;
+        }
+    }
+
+    public GroupUpdate setOldGroup(GroupModel group, GroupUpdate groupUpdate) {
+        if (group != null && groupUpdate != null) {
+            groupUpdate.setOldOwner(group.getOwner());
+            groupUpdate.setOldName(group.getName());
+            groupUpdate.setOldCategory(group.getCategory());
+
+            return groupUpdate;
+        } else {
+            return null;
+        }
+    }
+
+    public GroupUpdate setNewGroup(GroupModel group, GroupUpdate groupUpdate) {
+        if (group != null && groupUpdate != null) {
+            groupUpdate.setNewOwner(group.getOwner());
+            groupUpdate.setNewName(group.getName());
+            groupUpdate.setNewCategory(group.getCategory());
+
+            return groupUpdate;
         } else {
             return null;
         }

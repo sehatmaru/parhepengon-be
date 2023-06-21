@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-import static xcode.parhepengon.domain.enums.EventEnum.*;
+import static xcode.parhepengon.domain.enums.AccountHistoryEventEnum.*;
 import static xcode.parhepengon.shared.ResponseCode.*;
 import static xcode.parhepengon.shared.Utils.*;
 
@@ -79,11 +79,12 @@ public class UserService implements UserPresenter {
                     false
             ));
 
-            historyService.addHistory(LOGIN, model.get().getSecureId());
+            historyService.addAccountHistory(LOGIN, model.get().getSecureId());
 
             LoginResponse loginResponse = userMapper.userModelToLoginResponse(model.get(), token);
             loginResponse.setPhone(profileModel.get().getPhone());
             loginResponse.setFullName(profileModel.get().getFullName());
+            loginResponse.setEmail(profileModel.get().getEmail());
 
             response.setSuccess(loginResponse);
         } catch (Exception e) {
@@ -165,7 +166,7 @@ public class UserService implements UserPresenter {
             settingRepository.save(new SettingModel(userModel.get().getSecureId()));
             tokenModel.ifPresent(tokenRepository::delete);
 
-            historyService.addHistory(REGISTER, userModel.get().getSecureId());
+            historyService.addAccountHistory(REGISTER, userModel.get().getSecureId());
 
             response.setSuccess(true);
         } catch (Exception e) {
@@ -217,7 +218,7 @@ public class UserService implements UserPresenter {
 
         try {
             tokenModel.ifPresent(tokenRepository::delete);
-            historyService.addHistory(LOGOUT, null);
+            historyService.addAccountHistory(LOGOUT, null);
 
             response.setSuccess(true);
         } catch (Exception e) {
@@ -282,7 +283,7 @@ public class UserService implements UserPresenter {
             resetModel.setVerified(true);
             resetRepository.save(resetModel);
 
-            historyService.addHistory(RESET_PASSWORD, userModel.get().getSecureId());
+            historyService.addAccountHistory(RESET_PASSWORD, userModel.get().getSecureId());
 
             response.setSuccess(true);
         } catch (Exception e) {
@@ -309,7 +310,7 @@ public class UserService implements UserPresenter {
         try {
             userRepository.save(userMapper.changePasswordRequestToUserModel(request));
 
-            historyService.addHistory(CHANGE_PASSWORD, null);
+            historyService.addAccountHistory(CHANGE_PASSWORD, null);
 
             response.setSuccess(true);
         } catch (Exception e) {

@@ -3,11 +3,10 @@ package xcode.parhepengon.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
+import xcode.parhepengon.domain.dto.GroupUpdate;
+import xcode.parhepengon.domain.mapper.GroupMapper;
 import xcode.parhepengon.domain.mapper.GroupMemberMapper;
-import xcode.parhepengon.domain.model.CurrentUser;
-import xcode.parhepengon.domain.model.GroupMemberModel;
-import xcode.parhepengon.domain.model.GroupModel;
-import xcode.parhepengon.domain.model.UserModel;
+import xcode.parhepengon.domain.model.*;
 import xcode.parhepengon.domain.repository.GroupMemberRepository;
 import xcode.parhepengon.domain.repository.GroupRepository;
 import xcode.parhepengon.domain.repository.UserRepository;
@@ -22,7 +21,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
-import static xcode.parhepengon.domain.enums.EventEnum.*;
+import static xcode.parhepengon.domain.enums.GroupHistoryEventEnum.*;
 import static xcode.parhepengon.shared.ResponseCode.NOT_FOUND_MESSAGE;
 import static xcode.parhepengon.shared.ResponseCode.USER_EXIST_ON_GROUP;
 
@@ -31,6 +30,9 @@ public class GroupMemberService implements GroupMemberPresenter {
 
     @Autowired
     private HistoryService historyService;
+
+    @Autowired
+    private ProfileService profileService;
 
     @Autowired
     @Lazy
@@ -46,6 +48,7 @@ public class GroupMemberService implements GroupMemberPresenter {
     private UserRepository userRepository;
 
     private final GroupMemberMapper groupMemberMapper = new GroupMemberMapper();
+    private final GroupMapper groupMapper = new GroupMapper();
 
     @Override
     public BaseResponse<Boolean> add(AddKickMemberRequest request) {
@@ -65,7 +68,15 @@ public class GroupMemberService implements GroupMemberPresenter {
         try {
             groupMemberRepository.save(groupMemberMapper.addRequestToModel(request));
 
-            historyService.addHistory(ADD_MEMBER, null);
+            GroupUpdate groupUpdate = groupMapper.createGroupHistory(
+                    ADD_MEMBER,
+                    null,
+                    model.get().getGroup(),
+                    profileService.getUserFullName()
+            );
+            groupUpdate.setAddedUserName(profileService.getUserFullName(request.getMember()));
+
+            historyService.addGroupHistory(groupUpdate);
 
             response.setSuccess(true);
         } catch (Exception e) {
@@ -88,7 +99,16 @@ public class GroupMemberService implements GroupMemberPresenter {
         try {
             groupMemberRepository.save(groupMemberMapper.kickRequestToModel(model.get()));
 
-            historyService.addHistory(KICK_MEMBER, null);
+            GroupUpdate groupUpdate = groupMapper.createGroupHistory(
+                    KICK_MEMBER,
+                    null,
+                    model.get().getGroup(),
+                    profileService.getUserFullName(),
+                    profileService.getUserFullName(model.get().getMember())
+            );
+            groupUpdate.setDeletedUserName(profileService.getUserFullName(request.getMember()));
+
+            historyService.addGroupHistory(groupUpdate);
 
             response.setSuccess(true);
         } catch (Exception e) {
@@ -124,7 +144,19 @@ public class GroupMemberService implements GroupMemberPresenter {
                 groupRepository.save(groupOwner);
             }
 
-            historyService.addHistory(LEAVE_GROUP, null);
+            GroupUpdate groupUpdate = groupMapper.createGroupHistory(
+                    LEAVE_GROUP,
+                    null,
+                    model.get().getGroup(),
+                    profileService.getUserFullName()
+            );
+
+            historyService.addGroupHistory(groupUpdate);
+
+            groupUpdate.setEvent(CHANGE_OWNER);
+            groupUpdate.setNewOwner(groupOwner != null ? groupOwner.getOwner() : null);
+
+            historyService.addGroupHistory(groupUpdate);
 
             response.setSuccess(true);
         } catch (Exception e) {

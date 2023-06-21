@@ -13,7 +13,7 @@ import xcode.parhepengon.presenter.SettingPresenter;
 
 import java.util.Optional;
 
-import static xcode.parhepengon.domain.enums.EventEnum.UPDATE_SETTING;
+import static xcode.parhepengon.domain.enums.AccountHistoryEventEnum.UPDATE_SETTING;
 import static xcode.parhepengon.shared.ResponseCode.NOT_FOUND_MESSAGE;
 
 @Service
@@ -41,7 +41,7 @@ public class SettingService implements SettingPresenter {
         try {
             settingRepository.save(settingMapper.updateModel(model.get(), request));
 
-            historyService.addHistory(UPDATE_SETTING, null);
+            historyService.addAccountHistory(UPDATE_SETTING, null);
 
             response.setSuccess(true);
         } catch (Exception e) {

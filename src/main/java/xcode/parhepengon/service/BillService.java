@@ -2,15 +2,18 @@ package xcode.parhepengon.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import xcode.parhepengon.domain.dto.BillUpdate;
 import xcode.parhepengon.domain.enums.SplitTypeEnum;
 import xcode.parhepengon.domain.mapper.BillMapper;
 import xcode.parhepengon.domain.mapper.BillMemberMapper;
-import xcode.parhepengon.domain.model.Bill;
+import xcode.parhepengon.domain.dto.Bill;
 import xcode.parhepengon.domain.model.BillMemberModel;
 import xcode.parhepengon.domain.model.BillModel;
 import xcode.parhepengon.domain.model.CurrentUser;
 import xcode.parhepengon.domain.repository.BillMemberRepository;
 import xcode.parhepengon.domain.repository.BillRepository;
+import xcode.parhepengon.domain.repository.GroupRepository;
+import xcode.parhepengon.domain.repository.UserRepository;
 import xcode.parhepengon.domain.request.BaseRequest;
 import xcode.parhepengon.domain.request.bill.CreateBillRequest;
 import xcode.parhepengon.domain.response.BaseResponse;
@@ -24,10 +27,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-import static xcode.parhepengon.domain.enums.EventEnum.*;
+import static xcode.parhepengon.domain.enums.BillHistoryEventEnum.*;
 import static xcode.parhepengon.domain.enums.SplitTypeEnum.*;
-import static xcode.parhepengon.shared.ResponseCode.NOT_AUTHORIZED_MESSAGE;
-import static xcode.parhepengon.shared.ResponseCode.NOT_FOUND_MESSAGE;
+import static xcode.parhepengon.shared.ResponseCode.*;
 
 @Service
 public class BillService implements BillPresenter {
@@ -36,10 +38,19 @@ public class BillService implements BillPresenter {
     private HistoryService historyService;
 
     @Autowired
+    private ProfileService profileService;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
     private BillRepository billRepository;
 
     @Autowired
     private BillMemberRepository billMemberRepository;
+
+    @Autowired
+    private GroupRepository groupRepository;
 
     private final BillMapper billMapper = new BillMapper();
     private final BillMemberMapper billMemberMapper = new BillMemberMapper();
@@ -47,6 +58,14 @@ public class BillService implements BillPresenter {
     @Override
     public BaseResponse<SecureIdResponse> create(CreateBillRequest request) {
         BaseResponse<SecureIdResponse> response = new BaseResponse<>();
+
+        if (!request.getGroup().isEmpty() && groupRepository.getGroup(request.getGroup()).isEmpty()) {
+            throw new AppException(GROUP_NOT_FOUND_MESSAGE);
+        }
+
+        if (!isAllBillMemberExist(request.getMember())) {
+            throw new AppException(MEMBER_NOT_FOUND_MESSAGE);
+        }
 
         try {
             BillModel model = billMapper.createRequestToModel(request);
@@ -56,7 +75,7 @@ public class BillService implements BillPresenter {
 
             bills.forEach(e -> billMemberRepository.save(billMemberMapper.setBill(model.getSecureId(), e)));
 
-            historyService.addHistory(CREATE_BILL, null);
+            historyService.addBillHistory(billMapper.createBillHistory(ADD_BILL, null, model.getSecureId(), profileService.getUserFullName()));
 
             response.setSuccess(new SecureIdResponse(model.getSecureId()));
         } catch (Exception e) {
@@ -71,9 +90,21 @@ public class BillService implements BillPresenter {
         BaseResponse<Boolean> response = new BaseResponse<>();
 
         BillModel model = checkBill(request.getSecureId());
+        BillUpdate billUpdate = billMapper.createBillHistory(UPDATE_BILL, model, model.getSecureId(), profileService.getUserFullName());
+
+        if (!request.getGroup().isEmpty() && groupRepository.getGroup(request.getGroup()).isEmpty()) {
+            throw new AppException(GROUP_NOT_FOUND_MESSAGE);
+        }
+
+        if (!isAllBillMemberExist(request.getMember())) {
+            throw new AppException(MEMBER_NOT_FOUND_MESSAGE);
+        }
 
         try {
-            billRepository.save(billMapper.editModel(model, request));
+            BillModel updated = billMapper.editModel(model, request);
+            billUpdate = billMapper.setNewBill(updated, billUpdate);
+
+            billRepository.save(updated);
 
             List<Bill> bills = calculateBills(request.getMember(), request.getAmount(), request.getMethod());
 
@@ -87,7 +118,7 @@ public class BillService implements BillPresenter {
                 billMemberRepository.save(billMemberMapper.updateBill(memberModel.get(), e));
             });
 
-            historyService.addHistory(EDIT_BILL, null);
+            historyService.addBillHistory(billUpdate);
 
             response.setSuccess(true);
         } catch (Exception e) {
@@ -111,7 +142,7 @@ public class BillService implements BillPresenter {
 
             billMemberRepository.saveAll(memberModels);
 
-            historyService.addHistory(DELETE_BILL, null);
+            historyService.addBillHistory(billMapper.createBillHistory(DELETE_BILL, null, "", profileService.getUserFullName()));
 
             response.setSuccess(true);
         } catch (Exception e) {
@@ -152,5 +183,18 @@ public class BillService implements BillPresenter {
         }
 
         return bills;
+    }
+
+    public boolean isAllBillMemberExist(List<Bill> bills) {
+        boolean result = true;
+
+        for (Bill b : bills) {
+            if (userRepository.getActiveUserBySecureId(b.getMember()).isEmpty()) {
+                result = false;
+                break;
+            }
+        }
+
+        return result;
     }
 }

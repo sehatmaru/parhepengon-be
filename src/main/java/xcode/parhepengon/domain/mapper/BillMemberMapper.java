@@ -1,6 +1,6 @@
 package xcode.parhepengon.domain.mapper;
 
-import xcode.parhepengon.domain.model.Bill;
+import xcode.parhepengon.domain.dto.Bill;
 import xcode.parhepengon.domain.model.BillMemberModel;
 
 import java.util.Objects;

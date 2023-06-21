@@ -44,5 +44,5 @@ public class BillMemberModel {
     private Date settleAt;
 
     @Column(name = "deleted")
-    private Boolean deleted;
+    private Boolean deleted = false;
 }

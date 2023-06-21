@@ -71,16 +71,24 @@ public class BaseExceptions extends ResponseEntityExceptionHandler {
                 response.setInvalidToken();
                 break;
             }
-            case AUTH_ERROR_MESSAGE: {
-                response.setNotAuthorized(AUTH_ERROR_MESSAGE);
+            case AUTH_ERROR_MESSAGE:
+            case NOT_AUTHORIZED_MESSAGE:
+            case MEMBER_NOT_FOUND_MESSAGE: {
+                response.setNotAuthorized(ex.getMessage());
                 break;
             }
-            case NOT_FOUND_MESSAGE: {
-                response.setNotFound(NOT_FOUND_MESSAGE);
+            case NOT_FOUND_MESSAGE:
+            case GROUP_NOT_FOUND_MESSAGE:
+            case INVALID_CODE:
+            case EMAIL_NOT_FOUND: {
+                response.setNotFound(ex.getMessage());
                 break;
             }
-            case EXIST_MESSAGE: {
-                response.setExistData(EXIST_MESSAGE);
+            case EXIST_MESSAGE:
+            case EMAIL_EXIST:
+            case USERNAME_EXIST:
+            case USER_EXIST_ON_GROUP: {
+                response.setExistData(ex.getMessage());
                 break;
             }
             case PARAMS_ERROR_MESSAGE: {
@@ -93,30 +101,6 @@ public class BaseExceptions extends ResponseEntityExceptionHandler {
             }
             case OTP_ERROR_MESSAGE: {
                 response.setInvalidOTP();
-                break;
-            }
-            case EMAIL_EXIST: {
-                response.setExistData(EMAIL_EXIST);
-                break;
-            }
-            case USERNAME_EXIST: {
-                response.setExistData(USERNAME_EXIST);
-                break;
-            }
-            case USER_EXIST_ON_GROUP: {
-                response.setExistData(USER_EXIST_ON_GROUP);
-                break;
-            }
-            case EMAIL_NOT_FOUND: {
-                response.setNotFound(EMAIL_NOT_FOUND);
-                break;
-            }
-            case INVALID_CODE: {
-                response.setNotFound(INVALID_CODE);
-                break;
-            }
-            case NOT_AUTHORIZED_MESSAGE: {
-                response.setNotAuthorized(NOT_AUTHORIZED_MESSAGE);
                 break;
             }
             default: response.setFailed(ex.getMessage());

@@ -16,7 +16,7 @@ import xcode.parhepengon.presenter.ProfilePresenter;
 import java.util.Date;
 import java.util.Optional;
 
-import static xcode.parhepengon.domain.enums.EventEnum.UPDATE_PROFILE;
+import static xcode.parhepengon.domain.enums.AccountHistoryEventEnum.UPDATE_PROFILE;
 import static xcode.parhepengon.shared.ResponseCode.NOT_FOUND_MESSAGE;
 
 @Service
@@ -51,7 +51,7 @@ public class ProfileService implements ProfilePresenter {
             userModel.get().setUpdatedAt(new Date());
             userRepository.save(userModel.get());
 
-            historyService.addHistory(UPDATE_PROFILE, null);
+            historyService.addAccountHistory(UPDATE_PROFILE, null);
 
             response.setSuccess(true);
         } catch (Exception e) {
@@ -59,5 +59,13 @@ public class ProfileService implements ProfilePresenter {
         }
 
         return response;
+    }
+
+    public String getUserFullName() {
+        return profileRepository.getProfileBySecureId(CurrentUser.get().getUserSecureId()).map(ProfileModel::getFullName).orElse("");
+    }
+
+    public String getUserFullName(String secureId) {
+        return profileRepository.getProfileBySecureId(secureId).map(ProfileModel::getFullName).orElse("");
     }
 }

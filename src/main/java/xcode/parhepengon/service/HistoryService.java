@@ -2,40 +2,87 @@ package xcode.parhepengon.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import xcode.parhepengon.domain.enums.EventEnum;
+import xcode.parhepengon.domain.dto.BillUpdate;
+import xcode.parhepengon.domain.dto.GroupUpdate;
+import xcode.parhepengon.domain.enums.AccountHistoryEventEnum;
 import xcode.parhepengon.domain.mapper.HistoryMapper;
+import xcode.parhepengon.domain.model.BillHistoryModel;
+import xcode.parhepengon.domain.model.BillModel;
 import xcode.parhepengon.domain.model.CurrentUser;
-import xcode.parhepengon.domain.model.HistoryModel;
-import xcode.parhepengon.domain.repository.HistoryRepository;
+import xcode.parhepengon.domain.repository.AccountHistoryRepository;
+import xcode.parhepengon.domain.repository.BillHistoryRepository;
+import xcode.parhepengon.domain.repository.BillRepository;
+import xcode.parhepengon.domain.repository.GroupHistoryRepository;
+import xcode.parhepengon.domain.request.comment.AddCommentRequest;
 import xcode.parhepengon.domain.response.BaseResponse;
+import xcode.parhepengon.domain.response.SecureIdResponse;
 import xcode.parhepengon.exception.AppException;
 import xcode.parhepengon.presenter.HistoryPresenter;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 import java.util.Optional;
 
-import static xcode.parhepengon.shared.Utils.generateSecureId;
+import static xcode.parhepengon.shared.ResponseCode.NOT_FOUND_MESSAGE;
 
 @Service
 public class HistoryService implements HistoryPresenter {
 
     @Autowired
-    HistoryRepository historyRepository;
+    AccountHistoryRepository accountHistoryRepository;
+
+    @Autowired
+    BillHistoryRepository billHistoryRepository;
+
+    @Autowired
+    GroupHistoryRepository groupHistoryRepository;
+
+    @Autowired
+    BillRepository billRepository;
 
     private final HistoryMapper historyMapper = new HistoryMapper();
 
-    public void addHistory(EventEnum event, String secureId) {
-        String userSecureId = secureId != null ? secureId : CurrentUser.get().getUserSecureId();
-        try {
-            HistoryModel model = new HistoryModel();
-            model.setSecureId(generateSecureId());
-            model.setUserSecureId(userSecureId);
-            model.setCreatedAt(new Date());
-            model.setEvent(event);
+    @Override
+    public BaseResponse<SecureIdResponse> addComment(AddCommentRequest request) {
+        BaseResponse<SecureIdResponse> response = new BaseResponse<>();
 
-            historyRepository.save(model);
+        Optional<BillModel> model = billRepository.getBill(request.getBill());
+
+        if (model.isEmpty()) {
+            throw new AppException(NOT_FOUND_MESSAGE);
+        }
+
+        try {
+            BillHistoryModel historyModel = historyMapper.addCommentMapper(request, model.get().getSecureId());
+            billHistoryRepository.save(historyModel);
+
+            response.setSuccess(new SecureIdResponse(historyModel.getSecureId()));
+        } catch (Exception e) {
+            throw new AppException(e.toString());
+        }
+
+        return response;
+    }
+
+    public void addAccountHistory(AccountHistoryEventEnum event, String secureId) {
+        String userSecureId = secureId != null ? secureId : CurrentUser.get().getUserSecureId();
+
+        try {
+            accountHistoryRepository.save(historyMapper.accountHistoryMapper(event, userSecureId));
+        } catch (Exception e) {
+            throw new AppException(e.toString());
+        }
+    }
+
+    public void addBillHistory(BillUpdate bill) {
+        try {
+            billHistoryRepository.save(historyMapper.billHistoryMapper(bill));
+        } catch (Exception e) {
+            throw new AppException(e.toString());
+        }
+    }
+
+    public void addGroupHistory(GroupUpdate group) {
+        try {
+            groupHistoryRepository.save(historyMapper.groupHistoryMapper(group));
         } catch (Exception e) {
             throw new AppException(e.toString());
         }
