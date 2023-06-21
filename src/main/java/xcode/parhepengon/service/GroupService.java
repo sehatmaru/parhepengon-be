@@ -11,6 +11,7 @@ import xcode.parhepengon.domain.request.BaseRequest;
 import xcode.parhepengon.domain.request.group.CreateGroupRequest;
 import xcode.parhepengon.domain.response.BaseResponse;
 import xcode.parhepengon.domain.response.SecureIdResponse;
+import xcode.parhepengon.domain.response.group.GroupDetailResponse;
 import xcode.parhepengon.domain.response.group.GroupResponse;
 import xcode.parhepengon.domain.response.group.MemberResponse;
 import xcode.parhepengon.exception.AppException;
@@ -47,6 +48,9 @@ public class GroupService implements GroupPresenter {
 
     @Autowired
     private BillRepository billRepository;
+
+    @Autowired
+    private GroupHistoryRepository groupHistoryRepository;
 
     private final GroupMapper groupMapper = new GroupMapper();
     private final GroupMemberMapper groupMemberMapper = new GroupMemberMapper();
@@ -165,6 +169,43 @@ public class GroupService implements GroupPresenter {
 
         return response;
     }
+
+    @Override
+    public BaseResponse<GroupDetailResponse> detail(BaseRequest request) {
+        BaseResponse<GroupDetailResponse> response = new BaseResponse<>();
+
+        Optional<GroupModel> groupModel = groupRepository.getGroup(request.getSecureId());
+
+        if (groupModel.isEmpty()) {
+            throw new AppException(GROUP_NOT_FOUND_MESSAGE);
+        }
+
+        try {
+            List<GroupHistoryModel> groupHistoryModels = groupHistoryRepository.getGroupHistory(request.getSecureId());
+            List<GroupMemberModel> groupMemberModels = groupMemberRepository.getGroupMemberList(request.getSecureId());
+            List<BillModel> groupBillModels = billRepository.getGroupBills(request.getSecureId());
+
+            GroupDetailResponse groups = groupMapper.generateGroupDetailResponse(groupModel.get(), groupMemberModels, groupHistoryModels, groupBillModels);
+            groups.setCreatedBy(profileService.getUserFullName(groupModel.get().getOwner()));
+
+            for (int i=0; i<groupHistoryModels.size(); i++) {
+                groups.getHistory().get(i).setCreatedBy(profileService.getUserFullName(groupHistoryModels.get(i).getCreatedBy()));
+            }
+
+            for (int i=0; i<groupMemberModels.size(); i++) {
+                groups.getMember().get(i).setName(profileService.getUserFullName(groupMemberModels.get(i).getMember()));
+            }
+
+            for (int i=0; i<groupMemberModels.size(); i++) {
+                groups.getBills().get(i).setPrepaidBy(profileService.getUserFullName(groupBillModels.get(i).getPrepaidBy()));
+            }
+
+            response.setSuccess(groups);
+        } catch (Exception e) {
+            throw new AppException(e.toString());
+        }
+
+        return response;    }
 
     public GroupModel getGroupOwner(String secureId) {
         Optional<GroupModel> model = groupRepository.getGroup(secureId);

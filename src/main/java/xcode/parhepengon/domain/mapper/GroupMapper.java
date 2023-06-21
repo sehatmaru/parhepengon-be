@@ -4,8 +4,7 @@ import xcode.parhepengon.domain.dto.GroupUpdate;
 import xcode.parhepengon.domain.enums.GroupHistoryEventEnum;
 import xcode.parhepengon.domain.model.*;
 import xcode.parhepengon.domain.request.group.CreateGroupRequest;
-import xcode.parhepengon.domain.response.group.GroupResponse;
-import xcode.parhepengon.domain.response.group.MemberResponse;
+import xcode.parhepengon.domain.response.group.*;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -124,6 +123,78 @@ public class GroupMapper {
                 response.setSecureId(group.getSecureId());
                 response.setName(group.getName());
                 response.setCategory(group.getCategory());
+
+                result.add(response);
+            }
+        }
+
+        return result;
+    }
+
+    public GroupDetailResponse generateGroupDetailResponse(GroupModel groupModel,
+                                                           List<GroupMemberModel> groupMemberModels,
+                                                           List<GroupHistoryModel> groupHistoryModels,
+                                                           List<BillModel> groupBillModels) {
+        GroupDetailResponse model = new GroupDetailResponse();
+
+        if (groupModel != null) {
+            model.setSecureId(groupModel.getSecureId());
+            model.setName(groupModel.getName());
+            model.setCategory(groupModel.getCategory());
+            model.setCreatedAt(groupModel.getCreatedAt());
+            model.setLastUpdated(groupModel.getUpdatedAt());
+            model.setHistory(generateGroupHistoryResponse(groupHistoryModels));
+            model.setMember(generateGroupMemberResponse(groupMemberModels));
+            model.setBills(generateGroupBillResponse(groupBillModels));
+        }
+
+        return model;
+    }
+
+    public List<GroupHistoryResponse> generateGroupHistoryResponse(List<GroupHistoryModel> groups) {
+        List<GroupHistoryResponse> result = new ArrayList<>();
+
+        if (groups != null && !groups.isEmpty()) {
+            for (GroupHistoryModel group : groups) {
+                GroupHistoryResponse response = new GroupHistoryResponse();
+                response.setEvent(group.getEvent());
+                response.setComment(group.getComment());
+                response.setCreatedAt(group.getCreatedAt());
+
+                result.add(response);
+            }
+        }
+
+        return result;
+    }
+
+    public List<GroupMemberResponse> generateGroupMemberResponse(List<GroupMemberModel> groups) {
+        List<GroupMemberResponse> result = new ArrayList<>();
+
+        if (groups != null && !groups.isEmpty()) {
+            for (GroupMemberModel group : groups) {
+                GroupMemberResponse response = new GroupMemberResponse();
+                response.setJoinedAt(group.getJoinedAt());
+                response.setSecureId(group.getSecureId());
+                response.setLeaveAt(group.getLeaveAt());
+
+                result.add(response);
+            }
+        }
+
+        return result;
+    }
+
+    public List<GroupBillResponse> generateGroupBillResponse(List<BillModel> bills) {
+        List<GroupBillResponse> result = new ArrayList<>();
+
+        if (bills != null && !bills.isEmpty()) {
+            for (BillModel bill : bills) {
+                GroupBillResponse response = new GroupBillResponse();
+                response.setTitle(bill.getTitle());
+                response.setSecureId(bill.getSecureId());
+                response.setAmount(bill.getTotalAmount());
+                response.setSettle(bill.isSettle());
 
                 result.add(response);
             }
