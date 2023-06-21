@@ -4,18 +4,18 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import xcode.parhepengon.domain.request.BaseRequest;
 import xcode.parhepengon.domain.request.bill.CreateBillRequest;
 import xcode.parhepengon.domain.request.comment.AddCommentRequest;
 import xcode.parhepengon.domain.response.BaseResponse;
 import xcode.parhepengon.domain.response.SecureIdResponse;
 import xcode.parhepengon.domain.response.bill.BillDetailResponse;
+import xcode.parhepengon.domain.response.bill.BillResponse;
 import xcode.parhepengon.presenter.BillPresenter;
 import xcode.parhepengon.presenter.HistoryPresenter;
+
+import java.util.List;
 
 @Validated
 @RestController
@@ -73,6 +73,16 @@ public class BillAPI {
     @PostMapping("/detail")
     ResponseEntity<BaseResponse<BillDetailResponse>> detail(@RequestBody @Validated BaseRequest request) {
         BaseResponse<BillDetailResponse> response = billPresenter.detail(request);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(response);
+    }
+
+    @GetMapping("/list")
+    ResponseEntity<BaseResponse<List<BillResponse>>> list() {
+        BaseResponse<List<BillResponse>> response = billPresenter.list();
 
         return ResponseEntity
                 .status(HttpStatus.OK)

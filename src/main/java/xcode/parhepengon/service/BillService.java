@@ -17,14 +17,13 @@ import xcode.parhepengon.domain.request.bill.CreateBillRequest;
 import xcode.parhepengon.domain.response.BaseResponse;
 import xcode.parhepengon.domain.response.SecureIdResponse;
 import xcode.parhepengon.domain.response.bill.BillDetailResponse;
+import xcode.parhepengon.domain.response.bill.BillResponse;
 import xcode.parhepengon.exception.AppException;
 import xcode.parhepengon.presenter.BillPresenter;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 import static xcode.parhepengon.domain.enums.BillHistoryEventEnum.*;
 import static xcode.parhepengon.domain.enums.SplitTypeEnum.*;
@@ -199,6 +198,31 @@ public class BillService implements BillPresenter {
             response.setSuccess(bills);
         } catch (Exception e) {
             throw new AppException(e.toString());
+        }
+
+        return response;
+    }
+
+    @Override
+    public BaseResponse<List<BillResponse>> list() {
+        BaseResponse<List<BillResponse>> response = new BaseResponse<>();
+
+        List<BillMemberModel> billMemberModels = billMemberRepository.getBillByUser(CurrentUser.get().getUserSecureId());
+
+        if (billMemberModels.isEmpty()) {
+            response.setSuccess(Collections.emptyList());
+        } else {
+            try {
+                List<BillModel> billModels = new ArrayList<>();
+                billMemberModels.forEach(e -> {
+                    BillModel bill = billRepository.getBill(e.getBill()).orElse(null);
+                    billModels.add(bill);
+                });
+
+                response.setSuccess(billMapper.generateBillResponse(billModels));
+            } catch (Exception e) {
+                throw new AppException(e.toString());
+            }
         }
 
         return response;

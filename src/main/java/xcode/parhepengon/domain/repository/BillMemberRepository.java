@@ -18,6 +18,11 @@ public interface BillMemberRepository extends JpaRepository<BillMemberModel, Str
     Optional<BillMemberModel> getBillMember(String bill, String member);
 
     @Query(value = "SELECT * FROM t_bill_member" +
+            " WHERE member_secure_id = :user" +
+            " AND deleted IS FALSE", nativeQuery = true)
+    List<BillMemberModel> getBillByUser(String user);
+
+    @Query(value = "SELECT * FROM t_bill_member" +
             " WHERE bill_secure_id = :bill AND deleted IS FALSE", nativeQuery = true)
     List<BillMemberModel> getBillMemberList(String bill);
 }

@@ -2,16 +2,13 @@ package xcode.parhepengon.domain.mapper;
 
 import xcode.parhepengon.domain.dto.BillUpdate;
 import xcode.parhepengon.domain.enums.BillHistoryEventEnum;
-import xcode.parhepengon.domain.model.BillHistoryModel;
-import xcode.parhepengon.domain.model.BillMemberModel;
-import xcode.parhepengon.domain.model.BillModel;
-import xcode.parhepengon.domain.model.CurrentUser;
+import xcode.parhepengon.domain.model.*;
 import xcode.parhepengon.domain.request.bill.CreateBillRequest;
 import xcode.parhepengon.domain.response.bill.BillDetailResponse;
 import xcode.parhepengon.domain.response.bill.BillHistoryResponse;
 import xcode.parhepengon.domain.response.bill.BillMemberResponse;
+import xcode.parhepengon.domain.response.bill.BillResponse;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -151,6 +148,25 @@ public class BillMapper {
                 response.setAmount(bill.getAmount());
                 response.setSecureId(bill.getSecureId());
                 response.setAmountPercentage(bill.getAmountPercentage());
+
+                result.add(response);
+            }
+        }
+
+        return result;
+    }
+
+    public List<BillResponse> generateBillResponse(List<BillModel> billModels) {
+        List<BillResponse> result = new ArrayList<>();
+
+        if (billModels != null && !billModels.isEmpty()) {
+            for (BillModel bill : billModels) {
+                BillResponse response = new BillResponse();
+                response.setSecureId(bill.getSecureId());
+                response.setTitle(bill.getTitle());
+                response.setCategory(bill.getCategory());
+                response.setSettle(bill.isSettle());
+                response.setTotalAmount(bill.getTotalAmount());
 
                 result.add(response);
             }
