@@ -10,7 +10,7 @@ import java.util.Optional;
 @Repository
 public interface BillRepository extends JpaRepository<BillModel, String> {
     @Query(value = "SELECT * FROM t_bill" +
-            " WHERE secure_id = :secureId AND deleted_at IS NULL" +
+            " WHERE secure_id = :secureId" +
             " LIMIT 1", nativeQuery = true)
     Optional<BillModel> getBill(String secureId);
 }

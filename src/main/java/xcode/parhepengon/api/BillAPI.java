@@ -13,6 +13,7 @@ import xcode.parhepengon.domain.request.bill.CreateBillRequest;
 import xcode.parhepengon.domain.request.comment.AddCommentRequest;
 import xcode.parhepengon.domain.response.BaseResponse;
 import xcode.parhepengon.domain.response.SecureIdResponse;
+import xcode.parhepengon.domain.response.bill.BillDetailResponse;
 import xcode.parhepengon.presenter.BillPresenter;
 import xcode.parhepengon.presenter.HistoryPresenter;
 
@@ -62,6 +63,16 @@ public class BillAPI {
     @PostMapping("/comment/add")
     ResponseEntity<BaseResponse<SecureIdResponse>> addHistory(@RequestBody @Validated AddCommentRequest request) {
         BaseResponse<SecureIdResponse> response = historyPresenter.addComment(request);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(response);
+    }
+
+    @PostMapping("/detail")
+    ResponseEntity<BaseResponse<BillDetailResponse>> detail(@RequestBody @Validated BaseRequest request) {
+        BaseResponse<BillDetailResponse> response = billPresenter.detail(request);
 
         return ResponseEntity
                 .status(HttpStatus.OK)

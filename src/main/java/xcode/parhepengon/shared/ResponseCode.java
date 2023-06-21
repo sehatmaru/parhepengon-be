@@ -5,6 +5,7 @@ public class ResponseCode {
     public static final String FAILED_MESSAGE = "Bad request";
     public static final String NOT_FOUND_MESSAGE = "Data not found";
     public static final String GROUP_NOT_FOUND_MESSAGE = "Group not found";
+    public static final String BILL_NOT_FOUND_MESSAGE = "Bill not found";
     public static final String MEMBER_NOT_FOUND_MESSAGE = "Member not found";
     public static final String PARAMS_ERROR_MESSAGE = "Wrong params";
     public static final String EXIST_MESSAGE = "Data exist";

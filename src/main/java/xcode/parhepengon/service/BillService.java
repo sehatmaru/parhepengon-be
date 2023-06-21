@@ -7,17 +7,16 @@ import xcode.parhepengon.domain.enums.SplitTypeEnum;
 import xcode.parhepengon.domain.mapper.BillMapper;
 import xcode.parhepengon.domain.mapper.BillMemberMapper;
 import xcode.parhepengon.domain.dto.Bill;
+import xcode.parhepengon.domain.model.BillHistoryModel;
 import xcode.parhepengon.domain.model.BillMemberModel;
 import xcode.parhepengon.domain.model.BillModel;
 import xcode.parhepengon.domain.model.CurrentUser;
-import xcode.parhepengon.domain.repository.BillMemberRepository;
-import xcode.parhepengon.domain.repository.BillRepository;
-import xcode.parhepengon.domain.repository.GroupRepository;
-import xcode.parhepengon.domain.repository.UserRepository;
+import xcode.parhepengon.domain.repository.*;
 import xcode.parhepengon.domain.request.BaseRequest;
 import xcode.parhepengon.domain.request.bill.CreateBillRequest;
 import xcode.parhepengon.domain.response.BaseResponse;
 import xcode.parhepengon.domain.response.SecureIdResponse;
+import xcode.parhepengon.domain.response.bill.BillDetailResponse;
 import xcode.parhepengon.exception.AppException;
 import xcode.parhepengon.presenter.BillPresenter;
 
@@ -51,6 +50,9 @@ public class BillService implements BillPresenter {
 
     @Autowired
     private GroupRepository groupRepository;
+
+    @Autowired
+    private BillHistoryRepository billHistoryRepository;
 
     private final BillMapper billMapper = new BillMapper();
     private final BillMemberMapper billMemberMapper = new BillMemberMapper();
@@ -145,6 +147,39 @@ public class BillService implements BillPresenter {
             historyService.addBillHistory(billMapper.createBillHistory(DELETE_BILL, null, "", profileService.getUserFullName()));
 
             response.setSuccess(true);
+        } catch (Exception e) {
+            throw new AppException(e.toString());
+        }
+
+        return response;
+    }
+
+    @Override
+    public BaseResponse<BillDetailResponse> detail(BaseRequest request) {
+        BaseResponse<BillDetailResponse> response = new BaseResponse<>();
+
+        Optional<BillModel> billModel = billRepository.getBill(request.getSecureId());
+
+        if (billModel.isEmpty()) {
+            throw new AppException(BILL_NOT_FOUND_MESSAGE);
+        }
+
+        try {
+            List<BillHistoryModel> billHistoryModels = billHistoryRepository.getBillHistory(request.getSecureId());
+            List<BillMemberModel> billMemberModels = billMemberRepository.getBillMemberList(request.getSecureId());
+
+            BillDetailResponse bills = billMapper.generateBillDetailResponse(billModel.get(), billMemberModels, billHistoryModels);
+            bills.setCreatedBy(profileService.getUserFullName(billModel.get().getCreatedBy()));
+
+            for (int i=0; i<billHistoryModels.size(); i++) {
+                bills.getHistory().get(i).setCreatedBy(profileService.getUserFullName(billHistoryModels.get(i).getCreatedBy()));
+            }
+
+            for (int i=0; i<billMemberModels.size(); i++) {
+                bills.getMember().get(i).setName(profileService.getUserFullName(billMemberModels.get(i).getMember()));
+            }
+
+            response.setSuccess(bills);
         } catch (Exception e) {
             throw new AppException(e.toString());
         }
