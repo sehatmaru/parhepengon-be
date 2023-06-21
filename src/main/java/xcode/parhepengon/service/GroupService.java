@@ -20,10 +20,7 @@ import xcode.parhepengon.domain.response.group.MemberResponse;
 import xcode.parhepengon.exception.AppException;
 import xcode.parhepengon.presenter.GroupPresenter;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 import static xcode.parhepengon.domain.enums.GroupHistoryEventEnum.*;
 import static xcode.parhepengon.shared.ResponseCode.NOT_AUTHORIZED_MESSAGE;
@@ -103,6 +100,11 @@ public class GroupService implements GroupPresenter {
 
         try {
             groupRepository.save(groupMapper.deleteModel(model));
+
+            List<GroupMemberModel> groupMemberModels = groupMemberService.getMemberList(model.getSecureId());
+            groupMemberModels.forEach(e -> e.setLeaveAt(new Date()));
+
+            groupMemberRepository.saveAll(groupMemberModels);
 
             historyService.addGroupHistory(groupMapper.createGroupHistory(DELETE_GROUP, null, "", profileService.getUserFullName()));
 

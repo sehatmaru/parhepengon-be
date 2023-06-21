@@ -19,7 +19,7 @@ public interface GroupMemberRepository extends JpaRepository<GroupMemberModel, S
 
     @Query(value = "SELECT * FROM t_group_member" +
             " WHERE group_secure_id = :secureId AND leave_at IS NULL", nativeQuery = true)
-    Optional<List<GroupMemberModel>> getGroupMemberList(String secureId);
+    List<GroupMemberModel> getGroupMemberList(String secureId);
 
     @Query(value = "SELECT * FROM t_group_member" +
             " WHERE group_secure_id = :secureId AND member_secure_id != :user" +

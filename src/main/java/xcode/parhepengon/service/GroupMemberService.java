@@ -167,6 +167,6 @@ public class GroupMemberService implements GroupMemberPresenter {
     }
 
     public List<GroupMemberModel> getMemberList(String secureId) {
-        return groupMemberRepository.getGroupMemberList(secureId).orElse(Collections.emptyList());
+        return groupMemberRepository.getGroupMemberList(secureId);
     }
 }
