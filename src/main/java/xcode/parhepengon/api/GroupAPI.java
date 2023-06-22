@@ -11,6 +11,7 @@ import xcode.parhepengon.domain.request.group.AddKickMemberRequest;
 import xcode.parhepengon.domain.request.group.CreateGroupRequest;
 import xcode.parhepengon.domain.response.BaseResponse;
 import xcode.parhepengon.domain.response.SecureIdResponse;
+import xcode.parhepengon.domain.response.auth.UserResponse;
 import xcode.parhepengon.domain.response.group.GroupDetailResponse;
 import xcode.parhepengon.domain.response.group.GroupResponse;
 import xcode.parhepengon.domain.response.group.MemberResponse;
@@ -86,6 +87,16 @@ public class GroupAPI {
     @PostMapping("/member/list")
     ResponseEntity<BaseResponse<List<MemberResponse>>> memberList(@RequestBody @Validated BaseRequest request) {
         BaseResponse<List<MemberResponse>> response = groupPresenter.getMemberList(request);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(response);
+    }
+
+    @PostMapping("/non-member/list")
+    ResponseEntity<BaseResponse<List<UserResponse>>> nonMemberList(@RequestBody @Validated BaseRequest request) {
+        BaseResponse<List<UserResponse>> response = groupPresenter.getNonMemberList(request);
 
         return ResponseEntity
                 .status(HttpStatus.OK)

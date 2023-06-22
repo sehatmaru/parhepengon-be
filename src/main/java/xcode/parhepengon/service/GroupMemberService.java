@@ -168,4 +168,8 @@ public class GroupMemberService implements GroupMemberPresenter {
     public List<GroupMemberModel> getMemberList(String secureId) {
         return groupMemberRepository.getGroupMemberList(secureId);
     }
+
+    public List<GroupMemberModel> getNonMemberList(String secureId) {
+        return groupMemberRepository.getGroupNonMemberList(secureId, CurrentUser.get().getUserSecureId());
+    }
 }

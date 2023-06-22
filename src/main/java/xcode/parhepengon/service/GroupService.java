@@ -12,6 +12,7 @@ import xcode.parhepengon.domain.request.BaseRequest;
 import xcode.parhepengon.domain.request.group.CreateGroupRequest;
 import xcode.parhepengon.domain.response.BaseResponse;
 import xcode.parhepengon.domain.response.SecureIdResponse;
+import xcode.parhepengon.domain.response.auth.UserResponse;
 import xcode.parhepengon.domain.response.group.GroupDetailResponse;
 import xcode.parhepengon.domain.response.group.GroupResponse;
 import xcode.parhepengon.domain.response.group.MemberResponse;
@@ -214,6 +215,26 @@ public class GroupService implements GroupPresenter {
         List<GroupTypeEnum> list = Arrays.asList(GroupTypeEnum.values());
 
         response.setSuccess(list);
+
+        return response;
+    }
+
+    @Override
+    public BaseResponse<List<UserResponse>> getNonMemberList(BaseRequest request) {
+        BaseResponse<List<UserResponse>> response = new BaseResponse<>();
+
+        try {
+            List<GroupMemberModel> memberModels = groupMemberService.getNonMemberList(request.getSecureId());
+            List<UserResponse> userResponses = new ArrayList<>();
+            memberModels.forEach(e -> {
+                Optional<ProfileModel> profileModel = profileRepository.getProfileBySecureId(e.getMember());
+                userResponses.add(groupMapper.memberModelToUserResponse(e, profileModel.orElse(null)));
+            });
+
+            response.setSuccess(userResponses);
+        } catch (Exception e) {
+            throw new AppException(e.toString());
+        }
 
         return response;
     }

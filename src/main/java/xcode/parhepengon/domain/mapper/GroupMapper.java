@@ -4,6 +4,7 @@ import xcode.parhepengon.domain.dto.GroupUpdate;
 import xcode.parhepengon.domain.enums.GroupHistoryEventEnum;
 import xcode.parhepengon.domain.model.*;
 import xcode.parhepengon.domain.request.group.CreateGroupRequest;
+import xcode.parhepengon.domain.response.auth.UserResponse;
 import xcode.parhepengon.domain.response.group.*;
 
 import java.util.ArrayList;
@@ -55,6 +56,18 @@ public class GroupMapper {
             MemberResponse response = new MemberResponse();
             response.setFullName(profileModel.getFullName());
             response.setJoinedAt(memberModel.getJoinedAt());
+            response.setSecureId(memberModel.getMember());
+
+            return response;
+        } else {
+            return null;
+        }
+    }
+
+    public UserResponse memberModelToUserResponse(GroupMemberModel memberModel, ProfileModel profileModel) {
+        if (memberModel != null && profileModel != null) {
+            UserResponse response = new UserResponse();
+            response.setFullName(profileModel.getFullName());
             response.setSecureId(memberModel.getMember());
 
             return response;

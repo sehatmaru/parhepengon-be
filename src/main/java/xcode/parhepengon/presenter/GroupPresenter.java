@@ -5,6 +5,7 @@ import xcode.parhepengon.domain.request.BaseRequest;
 import xcode.parhepengon.domain.request.group.CreateGroupRequest;
 import xcode.parhepengon.domain.response.BaseResponse;
 import xcode.parhepengon.domain.response.SecureIdResponse;
+import xcode.parhepengon.domain.response.auth.UserResponse;
 import xcode.parhepengon.domain.response.group.GroupDetailResponse;
 import xcode.parhepengon.domain.response.group.GroupResponse;
 import xcode.parhepengon.domain.response.group.MemberResponse;
@@ -19,4 +20,5 @@ public interface GroupPresenter {
     BaseResponse<List<GroupResponse>> getList();
     BaseResponse<GroupDetailResponse> detail(BaseRequest request);
     BaseResponse<List<GroupTypeEnum>> getCategoryList();
+    BaseResponse<List<UserResponse>> getNonMemberList(BaseRequest request);
 }
