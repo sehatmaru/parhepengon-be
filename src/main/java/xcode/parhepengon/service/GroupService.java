@@ -197,7 +197,7 @@ public class GroupService implements GroupPresenter {
                 groups.getMember().get(i).setName(profileService.getUserFullName(groupMemberModels.get(i).getMember()));
             }
 
-            for (int i=0; i<groupMemberModels.size(); i++) {
+            for (int i=0; i<groupBillModels.size(); i++) {
                 groups.getBills().get(i).setPrepaidBy(profileService.getUserFullName(groupBillModels.get(i).getPrepaidBy()));
             }
 
