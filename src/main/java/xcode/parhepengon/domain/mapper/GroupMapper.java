@@ -64,11 +64,11 @@ public class GroupMapper {
         }
     }
 
-    public UserResponse memberModelToUserResponse(GroupMemberModel memberModel, ProfileModel profileModel) {
+    public UserResponse memberModelToUserResponse(UserModel memberModel, ProfileModel profileModel) {
         if (memberModel != null && profileModel != null) {
             UserResponse response = new UserResponse();
             response.setFullName(profileModel.getFullName());
-            response.setSecureId(memberModel.getMember());
+            response.setSecureId(memberModel.getSecureId());
 
             return response;
         } else {

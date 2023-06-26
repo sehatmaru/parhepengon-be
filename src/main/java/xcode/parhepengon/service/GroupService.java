@@ -54,6 +54,9 @@ public class GroupService implements GroupPresenter {
     @Autowired
     private GroupHistoryRepository groupHistoryRepository;
 
+    @Autowired
+    private UserRepository userRepository;
+
     private final GroupMapper groupMapper = new GroupMapper();
     private final GroupMemberMapper groupMemberMapper = new GroupMemberMapper();
 
@@ -224,10 +227,10 @@ public class GroupService implements GroupPresenter {
         BaseResponse<List<UserResponse>> response = new BaseResponse<>();
 
         try {
-            List<GroupMemberModel> memberModels = groupMemberService.getNonMemberList(request.getSecureId());
+            List<UserModel> memberModels = userRepository.getGroupNonMemberList(request.getSecureId(), CurrentUser.get().getUserSecureId());
             List<UserResponse> userResponses = new ArrayList<>();
             memberModels.forEach(e -> {
-                Optional<ProfileModel> profileModel = profileRepository.getProfileBySecureId(e.getMember());
+                Optional<ProfileModel> profileModel = profileRepository.getProfileBySecureId(e.getSecureId());
                 userResponses.add(groupMapper.memberModelToUserResponse(e, profileModel.orElse(null)));
             });
 
