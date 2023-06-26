@@ -1,5 +1,6 @@
 package xcode.parhepengon.api;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -14,8 +15,8 @@ import xcode.parhepengon.domain.response.BaseResponse;
 import xcode.parhepengon.domain.response.SecureIdResponse;
 import xcode.parhepengon.domain.response.bill.BillDetailResponse;
 import xcode.parhepengon.domain.response.bill.BillResponse;
-import xcode.parhepengon.presenter.BillPresenter;
-import xcode.parhepengon.presenter.HistoryPresenter;
+import xcode.parhepengon.service.BillService;
+import xcode.parhepengon.service.HistoryService;
 
 import java.util.List;
 
@@ -24,17 +25,12 @@ import java.util.List;
 @RequestMapping(value = "bill")
 public class BillAPI {
     
-    final BillPresenter billPresenter;
-    final HistoryPresenter historyPresenter;
-
-    public BillAPI(BillPresenter billPresenter, HistoryPresenter historyPresenter) {
-        this.billPresenter = billPresenter;
-        this.historyPresenter = historyPresenter;
-    }
+    @Autowired private BillService billService;
+    @Autowired private HistoryService historyService;
 
     @PostMapping("/create")
     ResponseEntity<BaseResponse<SecureIdResponse>> create(@RequestBody @Validated CreateBillRequest request) {
-        BaseResponse<SecureIdResponse> response = billPresenter.create(request);
+        BaseResponse<SecureIdResponse> response = billService.create(request);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -44,7 +40,7 @@ public class BillAPI {
 
     @PostMapping("/update")
     ResponseEntity<BaseResponse<Boolean>> update(@RequestBody @Validated CreateBillRequest request) {
-        BaseResponse<Boolean> response = billPresenter.edit(request);
+        BaseResponse<Boolean> response = billService.edit(request);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -54,7 +50,7 @@ public class BillAPI {
 
     @PostMapping("/delete")
     ResponseEntity<BaseResponse<Boolean>> delete(@RequestBody @Validated BaseRequest request) {
-        BaseResponse<Boolean> response = billPresenter.delete(request);
+        BaseResponse<Boolean> response = billService.delete(request);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -64,7 +60,7 @@ public class BillAPI {
 
     @PostMapping("/comment/add")
     ResponseEntity<BaseResponse<SecureIdResponse>> addComment(@RequestBody @Validated AddCommentRequest request) {
-        BaseResponse<SecureIdResponse> response = historyPresenter.addComment(request);
+        BaseResponse<SecureIdResponse> response = historyService.addComment(request);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -74,7 +70,7 @@ public class BillAPI {
 
     @PostMapping("/detail")
     ResponseEntity<BaseResponse<BillDetailResponse>> detail(@RequestBody @Validated BaseRequest request) {
-        BaseResponse<BillDetailResponse> response = billPresenter.detail(request);
+        BaseResponse<BillDetailResponse> response = billService.detail(request);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -84,7 +80,7 @@ public class BillAPI {
 
     @GetMapping("/list")
     ResponseEntity<BaseResponse<List<BillResponse>>> list() {
-        BaseResponse<List<BillResponse>> response = billPresenter.list();
+        BaseResponse<List<BillResponse>> response = billService.list();
 
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -94,7 +90,7 @@ public class BillAPI {
 
     @GetMapping("category/list")
     ResponseEntity<BaseResponse<List<BillTypeEnum>>> getCategoryList() {
-        BaseResponse<List<BillTypeEnum>> response = billPresenter.getCategoryList();
+        BaseResponse<List<BillTypeEnum>> response = billService.getCategoryList();
 
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -104,7 +100,7 @@ public class BillAPI {
 
     @GetMapping("method/list")
     ResponseEntity<BaseResponse<List<SplitTypeEnum>>> getMethodList() {
-        BaseResponse<List<SplitTypeEnum>> response = billPresenter.getMethodList();
+        BaseResponse<List<SplitTypeEnum>> response = billService.getMethodList();
 
         return ResponseEntity
                 .status(HttpStatus.OK)

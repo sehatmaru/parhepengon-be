@@ -20,7 +20,6 @@ import xcode.parhepengon.domain.response.SecureIdResponse;
 import xcode.parhepengon.domain.response.bill.BillDetailResponse;
 import xcode.parhepengon.domain.response.bill.BillResponse;
 import xcode.parhepengon.exception.AppException;
-import xcode.parhepengon.presenter.BillPresenter;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -31,7 +30,7 @@ import static xcode.parhepengon.domain.enums.SplitTypeEnum.*;
 import static xcode.parhepengon.shared.ResponseCode.*;
 
 @Service
-public class BillService implements BillPresenter {
+public class BillService {
 
     @Autowired
     private HistoryService historyService;
@@ -57,7 +56,6 @@ public class BillService implements BillPresenter {
     private final BillMapper billMapper = new BillMapper();
     private final BillMemberMapper billMemberMapper = new BillMemberMapper();
 
-    @Override
     public BaseResponse<SecureIdResponse> create(CreateBillRequest request) {
         BaseResponse<SecureIdResponse> response = new BaseResponse<>();
 
@@ -95,7 +93,6 @@ public class BillService implements BillPresenter {
         return response;
     }
 
-    @Override
     public BaseResponse<Boolean> edit(CreateBillRequest request) {
         BaseResponse<Boolean> response = new BaseResponse<>();
 
@@ -147,7 +144,6 @@ public class BillService implements BillPresenter {
         return response;
     }
 
-    @Override
     public BaseResponse<Boolean> delete(BaseRequest request) {
         BaseResponse<Boolean> response = new BaseResponse<>();
 
@@ -171,7 +167,6 @@ public class BillService implements BillPresenter {
         return response;
     }
 
-    @Override
     public BaseResponse<BillDetailResponse> detail(BaseRequest request) {
         BaseResponse<BillDetailResponse> response = new BaseResponse<>();
 
@@ -204,7 +199,6 @@ public class BillService implements BillPresenter {
         return response;
     }
 
-    @Override
     public BaseResponse<List<BillResponse>> list() {
         BaseResponse<List<BillResponse>> response = new BaseResponse<>();
 
@@ -229,7 +223,6 @@ public class BillService implements BillPresenter {
         return response;
     }
 
-    @Override
     public BaseResponse<List<BillTypeEnum>> getCategoryList() {
         BaseResponse<List<BillTypeEnum>> response = new BaseResponse<>();
         List<BillTypeEnum> list = Arrays.asList(BillTypeEnum.values());
@@ -239,7 +232,6 @@ public class BillService implements BillPresenter {
         return response;
     }
 
-    @Override
     public BaseResponse<List<SplitTypeEnum>> getMethodList() {
         BaseResponse<List<SplitTypeEnum>> response = new BaseResponse<>();
         List<SplitTypeEnum> list = Arrays.asList(SplitTypeEnum.values());

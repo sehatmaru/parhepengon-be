@@ -17,7 +17,6 @@ import xcode.parhepengon.domain.response.group.GroupDetailResponse;
 import xcode.parhepengon.domain.response.group.GroupResponse;
 import xcode.parhepengon.domain.response.group.MemberResponse;
 import xcode.parhepengon.exception.AppException;
-import xcode.parhepengon.presenter.GroupPresenter;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -26,7 +25,7 @@ import static xcode.parhepengon.domain.enums.GroupHistoryEventEnum.*;
 import static xcode.parhepengon.shared.ResponseCode.*;
 
 @Service
-public class GroupService implements GroupPresenter {
+public class GroupService {
     @Autowired
     private HistoryService historyService;
 
@@ -60,7 +59,6 @@ public class GroupService implements GroupPresenter {
     private final GroupMapper groupMapper = new GroupMapper();
     private final GroupMemberMapper groupMemberMapper = new GroupMemberMapper();
 
-    @Override
     public BaseResponse<SecureIdResponse> create(CreateGroupRequest request) {
         BaseResponse<SecureIdResponse> response = new BaseResponse<>();
 
@@ -81,7 +79,6 @@ public class GroupService implements GroupPresenter {
         return response;
     }
 
-    @Override
     public BaseResponse<Boolean> edit(CreateGroupRequest request) {
         BaseResponse<Boolean> response = new BaseResponse<>();
 
@@ -103,7 +100,6 @@ public class GroupService implements GroupPresenter {
         return response;
     }
 
-    @Override
     public BaseResponse<Boolean> delete(BaseRequest request) {
         BaseResponse<Boolean> response = new BaseResponse<>();
 
@@ -127,7 +123,6 @@ public class GroupService implements GroupPresenter {
         return response;
     }
 
-    @Override
     public BaseResponse<List<MemberResponse>> getMemberList(BaseRequest request) {
         BaseResponse<List<MemberResponse>> response = new BaseResponse<>();
 
@@ -153,7 +148,6 @@ public class GroupService implements GroupPresenter {
         return response;
     }
 
-    @Override
     public BaseResponse<List<GroupResponse>> getList() {
         BaseResponse<List<GroupResponse>> response = new BaseResponse<>();
 
@@ -175,7 +169,6 @@ public class GroupService implements GroupPresenter {
         return response;
     }
 
-    @Override
     public BaseResponse<GroupDetailResponse> detail(BaseRequest request) {
         BaseResponse<GroupDetailResponse> response = new BaseResponse<>();
 
@@ -210,9 +203,9 @@ public class GroupService implements GroupPresenter {
             throw new AppException(e.toString());
         }
 
-        return response;    }
+        return response;
+    }
 
-    @Override
     public BaseResponse<List<GroupTypeEnum>> getCategoryList() {
         BaseResponse<List<GroupTypeEnum>> response = new BaseResponse<>();
         List<GroupTypeEnum> list = Arrays.asList(GroupTypeEnum.values());
@@ -222,7 +215,6 @@ public class GroupService implements GroupPresenter {
         return response;
     }
 
-    @Override
     public BaseResponse<List<UserResponse>> getNonMemberList(BaseRequest request) {
         BaseResponse<List<UserResponse>> response = new BaseResponse<>();
 

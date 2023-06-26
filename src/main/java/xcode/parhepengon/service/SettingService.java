@@ -10,7 +10,6 @@ import xcode.parhepengon.domain.request.setting.SettingChangeRequest;
 import xcode.parhepengon.domain.response.BaseResponse;
 import xcode.parhepengon.domain.response.setting.SettingsResponse;
 import xcode.parhepengon.exception.AppException;
-import xcode.parhepengon.presenter.SettingPresenter;
 
 import java.util.Optional;
 
@@ -18,7 +17,7 @@ import static xcode.parhepengon.domain.enums.AccountHistoryEventEnum.UPDATE_SETT
 import static xcode.parhepengon.shared.ResponseCode.NOT_FOUND_MESSAGE;
 
 @Service
-public class SettingService implements SettingPresenter {
+public class SettingService {
 
     @Autowired
     private HistoryService historyService;
@@ -28,7 +27,6 @@ public class SettingService implements SettingPresenter {
 
     private final SettingMapper settingMapper = new SettingMapper();
 
-    @Override
     public BaseResponse<Boolean> change(SettingChangeRequest request) {
         BaseResponse<Boolean> response = new BaseResponse<>();
 
@@ -51,7 +49,6 @@ public class SettingService implements SettingPresenter {
         return response;
     }
 
-    @Override
     public BaseResponse<SettingsResponse> getAll() {
         BaseResponse<SettingsResponse> response = new BaseResponse<>();
 

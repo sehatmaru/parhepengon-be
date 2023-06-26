@@ -1,5 +1,6 @@
 package xcode.parhepengon.api;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -15,8 +16,8 @@ import xcode.parhepengon.domain.response.auth.UserResponse;
 import xcode.parhepengon.domain.response.group.GroupDetailResponse;
 import xcode.parhepengon.domain.response.group.GroupResponse;
 import xcode.parhepengon.domain.response.group.MemberResponse;
-import xcode.parhepengon.presenter.GroupMemberPresenter;
-import xcode.parhepengon.presenter.GroupPresenter;
+import xcode.parhepengon.service.GroupMemberService;
+import xcode.parhepengon.service.GroupService;
 
 import java.util.List;
 
@@ -25,18 +26,13 @@ import java.util.List;
 @RequestMapping(value = "group")
 public class GroupAPI {
     
-    final GroupPresenter groupPresenter;
+    @Autowired private GroupService groupService;
 
-    final GroupMemberPresenter groupMemberPresenter;
-
-    public GroupAPI(GroupPresenter groupPresenter, GroupMemberPresenter groupMemberPresenter) {
-        this.groupPresenter = groupPresenter;
-        this.groupMemberPresenter = groupMemberPresenter;
-    }
+    @Autowired private GroupMemberService groupMemberService;
 
     @PostMapping("/create")
     ResponseEntity<BaseResponse<SecureIdResponse>> create(@RequestBody @Validated CreateGroupRequest request) {
-        BaseResponse<SecureIdResponse> response = groupPresenter.create(request);
+        BaseResponse<SecureIdResponse> response = groupService.create(request);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -46,7 +42,7 @@ public class GroupAPI {
 
     @PostMapping("/update")
     ResponseEntity<BaseResponse<Boolean>> update(@RequestBody @Validated CreateGroupRequest request) {
-        BaseResponse<Boolean> response = groupPresenter.edit(request);
+        BaseResponse<Boolean> response = groupService.edit(request);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -56,7 +52,7 @@ public class GroupAPI {
 
     @PostMapping("/delete")
     ResponseEntity<BaseResponse<Boolean>> update(@RequestBody @Validated BaseRequest request) {
-        BaseResponse<Boolean> response = groupPresenter.delete(request);
+        BaseResponse<Boolean> response = groupService.delete(request);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -66,7 +62,7 @@ public class GroupAPI {
 
     @PostMapping("/member/add")
     ResponseEntity<BaseResponse<Boolean>> addMember(@RequestBody @Validated AddKickMemberRequest request) {
-        BaseResponse<Boolean> response = groupMemberPresenter.add(request);
+        BaseResponse<Boolean> response = groupMemberService.add(request);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -76,7 +72,7 @@ public class GroupAPI {
 
     @PostMapping("/member/kick")
     ResponseEntity<BaseResponse<Boolean>> kickMember(@RequestBody @Validated AddKickMemberRequest request) {
-        BaseResponse<Boolean> response = groupMemberPresenter.kick(request);
+        BaseResponse<Boolean> response = groupMemberService.kick(request);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -86,7 +82,7 @@ public class GroupAPI {
 
     @PostMapping("/member/list")
     ResponseEntity<BaseResponse<List<MemberResponse>>> memberList(@RequestBody @Validated BaseRequest request) {
-        BaseResponse<List<MemberResponse>> response = groupPresenter.getMemberList(request);
+        BaseResponse<List<MemberResponse>> response = groupService.getMemberList(request);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -96,7 +92,7 @@ public class GroupAPI {
 
     @PostMapping("/non-member/list")
     ResponseEntity<BaseResponse<List<UserResponse>>> nonMemberList(@RequestBody @Validated BaseRequest request) {
-        BaseResponse<List<UserResponse>> response = groupPresenter.getNonMemberList(request);
+        BaseResponse<List<UserResponse>> response = groupService.getNonMemberList(request);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -106,7 +102,7 @@ public class GroupAPI {
 
     @PostMapping("/member/leave")
     ResponseEntity<BaseResponse<Boolean>> leave(@RequestBody @Validated BaseRequest request) {
-        BaseResponse<Boolean> response = groupMemberPresenter.leave(request);
+        BaseResponse<Boolean> response = groupMemberService.leave(request);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -116,7 +112,7 @@ public class GroupAPI {
 
     @GetMapping("/list")
     ResponseEntity<BaseResponse<List<GroupResponse>>> getList() {
-        BaseResponse<List<GroupResponse>> response = groupPresenter.getList();
+        BaseResponse<List<GroupResponse>> response = groupService.getList();
 
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -126,7 +122,7 @@ public class GroupAPI {
 
     @PostMapping("/detail")
     ResponseEntity<BaseResponse<GroupDetailResponse>> detail(@RequestBody @Validated BaseRequest request) {
-        BaseResponse<GroupDetailResponse> response = groupPresenter.detail(request);
+        BaseResponse<GroupDetailResponse> response = groupService.detail(request);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -136,7 +132,7 @@ public class GroupAPI {
 
     @GetMapping("category/list")
     ResponseEntity<BaseResponse<List<GroupTypeEnum>>> getCategoryList() {
-        BaseResponse<List<GroupTypeEnum>> response = groupPresenter.getCategoryList();
+        BaseResponse<List<GroupTypeEnum>> response = groupService.getCategoryList();
 
         return ResponseEntity
                 .status(HttpStatus.OK)

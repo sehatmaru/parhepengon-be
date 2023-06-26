@@ -14,7 +14,6 @@ import xcode.parhepengon.domain.request.BaseRequest;
 import xcode.parhepengon.domain.request.group.AddKickMemberRequest;
 import xcode.parhepengon.domain.response.BaseResponse;
 import xcode.parhepengon.exception.AppException;
-import xcode.parhepengon.presenter.GroupMemberPresenter;
 
 import java.util.Date;
 import java.util.List;
@@ -25,7 +24,7 @@ import static xcode.parhepengon.shared.ResponseCode.NOT_FOUND_MESSAGE;
 import static xcode.parhepengon.shared.ResponseCode.USER_EXIST_ON_GROUP;
 
 @Service
-public class GroupMemberService implements GroupMemberPresenter {
+public class GroupMemberService {
 
     @Autowired
     private HistoryService historyService;
@@ -49,7 +48,6 @@ public class GroupMemberService implements GroupMemberPresenter {
     private final GroupMemberMapper groupMemberMapper = new GroupMemberMapper();
     private final GroupMapper groupMapper = new GroupMapper();
 
-    @Override
     public BaseResponse<Boolean> add(AddKickMemberRequest request) {
         BaseResponse<Boolean> response = new BaseResponse<>();
 
@@ -85,7 +83,6 @@ public class GroupMemberService implements GroupMemberPresenter {
         return response;
     }
 
-    @Override
     public BaseResponse<Boolean> kick(AddKickMemberRequest request) {
         BaseResponse<Boolean> response = new BaseResponse<>();
 
@@ -117,7 +114,6 @@ public class GroupMemberService implements GroupMemberPresenter {
         return response;
     }
 
-    @Override
     public BaseResponse<Boolean> leave(BaseRequest request) {
         BaseResponse<Boolean> response = new BaseResponse<>();
 

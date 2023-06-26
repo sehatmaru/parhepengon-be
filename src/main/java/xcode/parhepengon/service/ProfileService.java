@@ -11,7 +11,6 @@ import xcode.parhepengon.domain.repository.UserRepository;
 import xcode.parhepengon.domain.request.profile.EditProfileRequest;
 import xcode.parhepengon.domain.response.BaseResponse;
 import xcode.parhepengon.exception.AppException;
-import xcode.parhepengon.presenter.ProfilePresenter;
 
 import java.util.Date;
 import java.util.Optional;
@@ -20,7 +19,7 @@ import static xcode.parhepengon.domain.enums.AccountHistoryEventEnum.UPDATE_PROF
 import static xcode.parhepengon.shared.ResponseCode.NOT_FOUND_MESSAGE;
 
 @Service
-public class ProfileService implements ProfilePresenter {
+public class ProfileService {
 
     @Autowired
     private HistoryService historyService;
@@ -33,7 +32,6 @@ public class ProfileService implements ProfilePresenter {
 
     private final ProfileMapper profileMapper = new ProfileMapper();
 
-    @Override
     public BaseResponse<Boolean> update(EditProfileRequest request) {
         BaseResponse<Boolean> response = new BaseResponse<>();
 

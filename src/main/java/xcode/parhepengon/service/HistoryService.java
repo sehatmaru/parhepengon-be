@@ -17,14 +17,13 @@ import xcode.parhepengon.domain.request.comment.AddCommentRequest;
 import xcode.parhepengon.domain.response.BaseResponse;
 import xcode.parhepengon.domain.response.SecureIdResponse;
 import xcode.parhepengon.exception.AppException;
-import xcode.parhepengon.presenter.HistoryPresenter;
 
 import java.util.Optional;
 
 import static xcode.parhepengon.shared.ResponseCode.NOT_FOUND_MESSAGE;
 
 @Service
-public class HistoryService implements HistoryPresenter {
+public class HistoryService {
 
     @Autowired
     AccountHistoryRepository accountHistoryRepository;
@@ -40,7 +39,6 @@ public class HistoryService implements HistoryPresenter {
 
     private final HistoryMapper historyMapper = new HistoryMapper();
 
-    @Override
     public BaseResponse<SecureIdResponse> addComment(AddCommentRequest request) {
         BaseResponse<SecureIdResponse> response = new BaseResponse<>();
 

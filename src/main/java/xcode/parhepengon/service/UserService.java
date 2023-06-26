@@ -12,7 +12,6 @@ import xcode.parhepengon.domain.response.BaseResponse;
 import xcode.parhepengon.domain.response.auth.LoginResponse;
 import xcode.parhepengon.domain.response.auth.RegisterResponse;
 import xcode.parhepengon.exception.AppException;
-import xcode.parhepengon.presenter.UserPresenter;
 
 import java.util.List;
 import java.util.Objects;
@@ -23,7 +22,7 @@ import static xcode.parhepengon.shared.ResponseCode.*;
 import static xcode.parhepengon.shared.Utils.*;
 
 @Service
-public class UserService implements UserPresenter {
+public class UserService {
     @Autowired
     private JwtService jwtService;
 
@@ -55,7 +54,6 @@ public class UserService implements UserPresenter {
     private final CommonMapper commonMapper = new CommonMapper();
     private final ProfileMapper profileMapper = new ProfileMapper();
 
-    @Override
     public BaseResponse<LoginResponse> login(LoginRequest request) {
         BaseResponse<LoginResponse> response = new BaseResponse<>();
 
@@ -94,7 +92,6 @@ public class UserService implements UserPresenter {
         return response;
     }
 
-    @Override
     public BaseResponse<RegisterResponse> register(RegisterRequest request) {
         BaseResponse<RegisterResponse> response = new BaseResponse<>();
 
@@ -136,7 +133,6 @@ public class UserService implements UserPresenter {
         return response;
     }
 
-    @Override
     public BaseResponse<Boolean> verifyOtp(VerifyOtpRequest request) {
         BaseResponse<Boolean> response = new BaseResponse<>();
 
@@ -176,7 +172,6 @@ public class UserService implements UserPresenter {
         return response;
     }
 
-    @Override
     public BaseResponse<Boolean> resendOtp() {
         BaseResponse<Boolean> response = new BaseResponse<>();
 
@@ -206,7 +201,6 @@ public class UserService implements UserPresenter {
         return response;
     }
 
-    @Override
     public BaseResponse<Boolean> logout() {
         BaseResponse<Boolean> response = new BaseResponse<>();
 
@@ -228,7 +222,6 @@ public class UserService implements UserPresenter {
         return response;
     }
 
-    @Override
     public BaseResponse<Boolean> forgotPassword(ForgotPasswordRequest request) {
         BaseResponse<Boolean> response = new BaseResponse<>();
 
@@ -253,7 +246,6 @@ public class UserService implements UserPresenter {
         return response;
     }
 
-    @Override
     public BaseResponse<Boolean> resetPassword(ResetPasswordRequest request) {
         BaseResponse<Boolean> response = new BaseResponse<>();
 
@@ -293,7 +285,6 @@ public class UserService implements UserPresenter {
         return response;
     }
 
-    @Override
     public BaseResponse<Boolean> changePassword(ChangePasswordRequest request) {
         BaseResponse<Boolean> response = new BaseResponse<>();
 
